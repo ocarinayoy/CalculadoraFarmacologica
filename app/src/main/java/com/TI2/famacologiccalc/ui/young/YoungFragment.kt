@@ -1,4 +1,4 @@
-package com.TI2.famacologiccalc.ui.gallery
+package com.TI2.famacologiccalc.ui.young
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.TI2.famacologiccalc.databinding.FragmentGalleryBinding
+import com.TI2.famacologiccalc.databinding.FragmentYoungBinding
 
-class GalleryFragment : Fragment() {
+class YoungFragment : Fragment() {
 
-    private var _binding: FragmentGalleryBinding? = null
+    private var _binding: FragmentYoungBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class GalleryFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val galleryViewModel =
-            ViewModelProvider(this).get(GalleryViewModel::class.java)
+        val YoungViewModel =
+            ViewModelProvider(this).get(YoungViewModel::class.java)
 
-        _binding = FragmentGalleryBinding.inflate(inflater, container, false)
+        _binding = FragmentYoungBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textGallery
-        galleryViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textYoung
+        YoungViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root

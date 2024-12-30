@@ -8,8 +8,11 @@
     <string name="action_settings">Settings</string>
 
     <string name="menu_home">Home</string>
-    <string name="menu_gallery">Por superficie corporal</string>
-    <string name="menu_slideshow">Dosificación ponderada diaria</string>
-    <string name="menu_formula">Formula de Clark</string>
-
+    <string name="menu_clark">Formula de Clark</string>
+    <string name="menu_young">Regla de Young</string>
+    <string name="menu_fried">Fórmula de Fried</string>
+    <string name="menu_surface_dosage">Dosis por superficie corporal</string>
+    <string name="menu_infusion_rate">Cálculo de goteo intravenoso</string>
+    <string name="menu_renal_clearance">Ajuste por aclaramiento renal</string>
+    <string name="menu_weighted_dosage">Dosis ponderada diaria</string>
 </resources>

@@ -12,21 +12,45 @@
         tools:layout="@layout/fragment_home" />
 
     <fragment
-        android:id="@+id/nav_gallery"
-        android:name="com.TI2.famacologiccalc.ui.gallery.GalleryFragment"
-        android:label="@string/menu_gallery"
-        tools:layout="@layout/fragment_gallery" />
+        android:id="@+id/nav_surface_dosage"
+        android:name="com.TI2.famacologiccalc.ui.surfacedosage.SurfaceDosageFragment"
+        android:label="@string/menu_surface_dosage"
+        tools:layout="@layout/fragment_surface_dosage" />
 
     <fragment
-        android:id="@+id/nav_slideshow"
-        android:name="com.TI2.famacologiccalc.ui.slideshow.SlideshowFragment"
-        android:label="@string/menu_slideshow"
-        tools:layout="@layout/fragment_slideshow" />
+        android:id="@+id/nav_weighted_dosage"
+        android:name="com.TI2.famacologiccalc.ui.weighteddosage.WeightedDosageFragment"
+        android:label="@string/menu_weighted_dosage"
+        tools:layout="@layout/fragment_weighteddosage" />
 
     <fragment
-        android:id="@+id/nav_formula"
-        android:name="com.TI2.famacologiccalc.ui.formula.FormulaFragment"
-        android:label="@string/menu_formula"
-        tools:layout="@layout/fragment_formula" />
+        android:id="@+id/nav_clark"
+        android:name="com.TI2.famacologiccalc.ui.clark.ClarkFragment"
+        android:label="@string/menu_clark"
+        tools:layout="@layout/fragment_clark" />
+
+    <fragment
+        android:id="@+id/nav_young"
+        android:name="com.TI2.famacologiccalc.ui.young.YoungFragment"
+        android:label="@string/menu_young"
+        tools:layout="@layout/fragment_young" />
+
+    <fragment
+        android:id="@+id/nav_fried"
+        android:name="com.TI2.famacologiccalc.ui.fried.FriedFragment"
+        android:label="@string/menu_fried"
+        tools:layout="@layout/fragment_fried" />
+
+    <fragment
+        android:id="@+id/nav_infusion_rate"
+        android:name="com.TI2.famacologiccalc.ui.infusionrate.InfusionRateFragment"
+        android:label="@string/menu_infusion_rate"
+        tools:layout="@layout/fragment_infusion_rate" />
+
+    <fragment
+        android:id="@+id/nav_renal_clearance"
+        android:name="com.TI2.famacologiccalc.ui.renalclearance.RenalClearanceFragment"
+        android:label="@string/menu_renal_clearance"
+        tools:layout="@layout/fragment_renal_clearance" />
 
 </navigation>

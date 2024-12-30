@@ -1,4 +1,4 @@
-package com.TI2.famacologiccalc.ui.slideshow
+package com.TI2.famacologiccalc.ui.infusionrate
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import com.TI2.famacologiccalc.databinding.FragmentSlideshowBinding
+import com.TI2.famacologiccalc.databinding.FragmentInfusionRateBinding
 
-class SlideshowFragment : Fragment() {
+class InfusionRateFragment : Fragment() {
 
-    private var _binding: FragmentSlideshowBinding? = null
+    private var _binding: FragmentInfusionRateBinding? = null
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -22,14 +22,14 @@ class SlideshowFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val slideshowViewModel =
-            ViewModelProvider(this).get(SlideshowViewModel::class.java)
+        val InfusionrateViewModel =
+            ViewModelProvider(this).get(InfusionRateViewModel::class.java)
 
-        _binding = FragmentSlideshowBinding.inflate(inflater, container, false)
+        _binding = FragmentInfusionRateBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
-        val textView: TextView = binding.textSlideshow
-        slideshowViewModel.text.observe(viewLifecycleOwner) {
+        val textView: TextView = binding.textInfusionRate
+        InfusionrateViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
         return root
