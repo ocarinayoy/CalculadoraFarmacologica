@@ -1,7 +1,7 @@
 package com.TI2.famacologiccalc.adapters
 
 import com.TI2.famacologiccalc.R
-import com.TI2.famacologiccalc.models.News
+import com.TI2.famacologiccalc.database.models.News
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup

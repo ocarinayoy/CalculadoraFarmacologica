@@ -15,7 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.TI2.famacologiccalc.R
 import com.TI2.famacologiccalc.adapters.NewsAdapter
 import com.TI2.famacologiccalc.databinding.FragmentHomeBinding
-import com.TI2.famacologiccalc.models.News
+import com.TI2.famacologiccalc.database.models.News
 
 class HomeFragment : Fragment() {
 

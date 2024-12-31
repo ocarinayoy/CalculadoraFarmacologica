@@ -1,4 +1,4 @@
-package com.TI2.famacologiccalc.models
+package com.TI2.famacologiccalc.database.models
 
 data class News(
     val title: String,        // Título de la noticia
