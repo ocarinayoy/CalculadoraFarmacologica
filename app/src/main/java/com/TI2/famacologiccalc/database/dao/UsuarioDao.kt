@@ -12,23 +12,27 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface UsuarioDao {
 
-    // Obtener todos los usuarioss
+    // Obtener todos los usuarios
     @Query("SELECT * FROM usuarios")
     fun getAllUsuarios(): Flow<List<Usuarios>>
 
-    // Insertar un nuevo usuarios
+    // Insertar un nuevo usuario
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertUsuarios(usuarios: Usuarios)
 
-    // Actualizar un usuarios existente
+    // Actualizar un usuario existente
     @Update
     suspend fun updateUsuarios(usuarios: Usuarios)
 
-    // Eliminar un usuarios
+    // Eliminar un usuario
     @Delete
     suspend fun deleteUsuarios(usuarios: Usuarios)
 
-    // Buscar usuarios por su email
+    // Buscar usuario por su email
     @Query("SELECT * FROM usuarios WHERE email = :email LIMIT 1")
     suspend fun getUsuarioByEmail(email: String): Usuarios?
+
+    // Buscar usuario por su email y contraseña
+    @Query("SELECT * FROM usuarios WHERE email = :email AND password = :password LIMIT 1")
+    suspend fun getUsuarioByEmailAndPassword(email: String, password: String): Usuarios?
 }

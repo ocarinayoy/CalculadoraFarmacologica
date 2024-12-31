@@ -23,4 +23,10 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
     suspend fun update(usuario: Usuarios) {
         usuarioDao.updateUsuarios(usuario)
     }
+
+    // Función para verificar el login del usuario por email y contraseña
+    @WorkerThread
+    suspend fun loginUsuario(email: String, password: String): Usuarios? {
+        return usuarioDao.getUsuarioByEmailAndPassword(email, password)
+    }
 }
