@@ -10,8 +10,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.TI2.famacologiccalc.R
+import com.TI2.famacologiccalc.adapters.NewsAdapter
 import com.TI2.famacologiccalc.databinding.FragmentHomeBinding
+import com.TI2.famacologiccalc.models.News
 
 class HomeFragment : Fragment() {
 
@@ -28,22 +32,70 @@ class HomeFragment : Fragment() {
         // Inflar el diseño para este fragmento
         val view = inflater.inflate(R.layout.fragment_home, container, false)
 
-        // Vincular las vistas
-        val editText = view.findViewById<EditText>(R.id.et_input)
-        val button = view.findViewById<Button>(R.id.btn_submit)
+        // Inicializar RecyclerView
+        val recyclerView: RecyclerView = view.findViewById(R.id.rv_news)
 
-        // Configurar el botón
-        button.setOnClickListener {
-            val inputText = editText.text.toString()
-            if (inputText.isNotEmpty()) {
-                Toast.makeText(context, "Texto ingresado: $inputText", Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(context, "Por favor ingresa un texto.", Toast.LENGTH_SHORT).show()
-            }
-        }
+        // Lista de noticias
+        val newsList = listOf(
+            News(
+                title = "Nueva actualización de la app",
+                description = "Descubre las últimas funcionalidades añadidas.",
+                imageResId = R.drawable.ic_menu_update
+            ),
+            News(
+                title = "Tips de enfermería",
+                description = "Consejos para mejorar tu práctica diaria.",
+                imageResId = R.drawable.ic_menu_tips
+            ),
+            News(
+                title = "Noticias de farmacología",
+                description = "Avances recientes en medicamentos y terapias.",
+                imageResId = R.drawable.ic_menu_farmacology
+            ),
+            News(
+                title = "Jornada internacional de enfermería",
+                description = "Participa en la jornada virtual con expertos de todo el mundo.",
+                imageResId = R.drawable.ic_menu_event
+            ),
+            News(
+                title = "Medicación segura en pediatría",
+                description = "Guía actualizada sobre el cálculo de dosis en niños.",
+                imageResId = R.drawable.ic_menu_pediatrics
+            ),
+            News(
+                title = "Innovaciones en terapias oncológicas",
+                description = "Nuevas opciones de tratamiento con menos efectos secundarios.",
+                imageResId = R.drawable.ic_menu_oncology
+            ),
+            News(
+                title = "Protocolos actualizados de RCP",
+                description = "Descubre los últimos cambios en los protocolos de reanimación.",
+                imageResId = R.drawable.ic_menu_rcp
+            ),
+            News(
+                title = "Vacunas en el embarazo",
+                description = "Recomendaciones clave para la inmunización durante la gestación.",
+                imageResId = R.drawable.ic_menu_farmacology
+            ),
+            News(
+                title = "Uso adecuado de antibióticos",
+                description = "Cómo prevenir la resistencia bacteriana en tu práctica clínica.",
+                imageResId = R.drawable.ic_menu_farmacology
+            ),
+            News(
+                title = "Congreso anual de farmacología",
+                description = "Reserva tu lugar en el evento más importante del año.",
+                imageResId = R.drawable.ic_menu_congress
+            )
+        )
+
+        // Configurar adaptador
+        recyclerView.layoutManager = LinearLayoutManager(context)
+        recyclerView.adapter = NewsAdapter(newsList)
 
         return view
     }
+
 
     override fun onDestroyView() {
         super.onDestroyView()

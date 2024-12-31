@@ -10,7 +10,7 @@
             android:title="@string/menu_home" />
         <item
             android:id="@+id/nav_weighted_dosage"
-            android:icon="@drawable/ic_menu_surface_dosage"
+            android:icon="@drawable/ic_menu_dailyweighteddosage"
             android:title="@string/menu_weighted_dosage" />
         <item
             android:id="@+id/nav_surface_dosage"
@@ -18,23 +18,23 @@
             android:title="@string/menu_surface_dosage" />
         <item
             android:id="@+id/nav_clark"
-            android:icon="@drawable/ic_menu_clark"
+            android:icon="@drawable/ic_menu_newborn"
             android:title="@string/menu_clark" />
         <item
-            android:id="@+id/nav_young"
-            android:icon="@drawable/ic_menu_clark"
-            android:title="@string/menu_young" />
-        <item
             android:id="@+id/nav_fried"
-            android:icon="@drawable/ic_menu_clark"
+            android:icon="@drawable/ic_menu_newborn"
             android:title="@string/menu_fried" />
         <item
+            android:id="@+id/nav_young"
+            android:icon="@drawable/ic_menu_child"
+            android:title="@string/menu_young" />
+        <item
             android:id="@+id/nav_infusion_rate"
-            android:icon="@drawable/ic_menu_clark"
+            android:icon="@drawable/ic_menu_infusion"
             android:title="@string/menu_infusion_rate" />
         <item
             android:id="@+id/nav_renal_clearance"
-            android:icon="@drawable/ic_menu_clark"
+            android:icon="@drawable/ic_menu_renal"
             android:title="@string/menu_renal_clearance" />
     </group>
 </menu>

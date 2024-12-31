@@ -1,31 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    tools:context=".ui.home.HomeFragment">
 
-    <!-- EditText con ghost text -->
-    <EditText
-        android:id="@+id/et_input"
-        android:layout_width="match_parent"
+    <!-- Título de la sección -->
+    <TextView
+        android:id="@+id/tv_title"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:hint="Escribe algo aquí..."
-        android:inputType="text"
-        android:padding="10dp"
-        android:background="@android:drawable/edit_text"/>
+        android:text="Noticias"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:paddingBottom="8dp" />
 
-    <!-- Espaciado -->
-    <Space
+    <!-- RecyclerView para la lista de noticias -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_news"
         android:layout_width="match_parent"
-        android:layout_height="16dp" />
-
-    <!-- Botón -->
-    <Button
-        android:id="@+id/btn_submit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Enviar" />
-
+        android:layout_height="match_parent"
+        android:padding="16dp"
+        android:clipToPadding="false"
+        tools:listitem="@layout/news_home" />
 </LinearLayout>
