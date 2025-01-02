@@ -67,10 +67,10 @@ class RegisterFragment : Fragment() {
             val username = etUsername.text.toString().trim()
             val email = etEmail.text.toString().trim()
             val password = etPassword.text.toString().trim()
-            val especialidad = etEspecialidad.text.toString().trim()
+            val especialidad = etEspecialidad.text.toString().trim().ifEmpty { null } // Hacer especialidad opcional
 
-            if (username.isEmpty() || email.isEmpty() || password.isEmpty() || especialidad.isEmpty()) {
-                Toast.makeText(requireContext(), "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
+            if (username.isEmpty() || email.isEmpty() || password.isEmpty()) {
+                Toast.makeText(requireContext(), "Por favor completa todos los campos obligatorios", Toast.LENGTH_SHORT).show()
             } else {
                 // Llamar al ViewModel para registrar el usuario
                 registerViewModel.register(username, email, password, especialidad)

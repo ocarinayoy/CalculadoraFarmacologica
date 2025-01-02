@@ -12,7 +12,7 @@ class RegisterViewModel(private val repository: UsuarioRepository) : ViewModel()
     // Variable pública para exponer el resultado del registro (inmutable)
     val registerResult: LiveData<Boolean> = _registerResult
     // Función para manejar el registro de un nuevo usuario
-    fun register(nombre: String, email: String, password: String, especialidad: String) {
+    fun register(nombre: String, email: String, password: String, especialidad: String?) {
         // Usamos viewModelScope para manejar la operación en un hilo de fondo
         viewModelScope.launch {
             // Verificamos si el usuario ya existe
