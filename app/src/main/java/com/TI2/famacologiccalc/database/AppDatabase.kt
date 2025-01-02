@@ -57,8 +57,7 @@ abstract class AppDatabase : RoomDatabase() {
                 usuarioDao.insertUsuarios(usuario2)
         }
 
-
-        private class DatabaseCallback(private val scope: CoroutineScope) :
+           private class DatabaseCallback(private val scope: CoroutineScope) :
             RoomDatabase.Callback() {
 
             override fun onCreate(db: SupportSQLiteDatabase) {

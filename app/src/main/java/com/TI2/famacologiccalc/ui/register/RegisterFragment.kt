@@ -11,6 +11,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import com.TI2.famacologiccalc.R
+import com.TI2.famacologiccalc.database.DatabaseInstance
+import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
+import com.TI2.famacologiccalc.ui.ViewModelFactory
 
 class RegisterFragment : Fragment() {
 
@@ -39,8 +42,13 @@ class RegisterFragment : Fragment() {
         etEspecialidad = view.findViewById(R.id.etEspecialidad)
         btnRegister = view.findViewById(R.id.btnRegister)
 
-        // Inicializar el ViewModel
-        registerViewModel = ViewModelProvider(this).get(RegisterViewModel::class.java)
+        // Inicializar la base de datos y el repositorio
+        val database = DatabaseInstance.getDatabase(requireContext())
+        val usuarioRepository = UsuarioRepository(database.usuarioDao())
+
+        // Usar el ViewModelFactory para crear el RegisterViewModel
+        val factory = ViewModelFactory(usuarioRepository)
+        registerViewModel = ViewModelProvider(this, factory).get(RegisterViewModel::class.java)
 
         // Observar el resultado del registro
         registerViewModel.registerResult.observe(viewLifecycleOwner, { result ->
