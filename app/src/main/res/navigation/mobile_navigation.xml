@@ -5,12 +5,38 @@
     android:id="@+id/mobile_navigation"
     app:startDestination="@+id/nav_login">
 
+    <!-- Fragmento de Login -->
     <fragment
         android:id="@+id/nav_login"
         android:name="com.TI2.famacologiccalc.ui.login.LoginFragment"
         android:label="@string/login"
-        tools:layout="@layout/fragment_login" />
+        tools:layout="@layout/fragment_login">
+        <!-- Acción de navegación desde Login a Home -->
+        <action
+            android:id="@+id/action_nav_login_to_nav_home"
+            app:destination="@id/nav_home" />
+        <action
+            android:id="@+id/action_nav_login_to_nav_register"
+            app:destination="@id/nav_register" />
+        <!-- Acción de navegación desde Login a Register (Sign Up) -->
+    </fragment>
 
+    <!-- Fragmento de Register -->
+    <fragment
+        android:id="@+id/nav_register"
+        android:name="com.TI2.famacologiccalc.ui.register.RegisterFragment"
+        android:label="@string/register"
+        tools:layout="@layout/fragment_register">
+        <!-- Acción de navegación desde Register a Login -->
+        <action
+            android:id="@+id/action_registerFragment_to_loginFragment"
+            app:destination="@id/nav_login" />
+        <action
+            android:id="@+id/action_nav_register_to_nav_login"
+            app:destination="@id/nav_login" />
+    </fragment>
+
+    <!-- Otros fragmentos en el menú -->
     <fragment
         android:id="@+id/nav_home"
         android:name="com.TI2.famacologiccalc.ui.home.HomeFragment"
@@ -58,5 +84,4 @@
         android:name="com.TI2.famacologiccalc.ui.renalclearance.RenalClearanceFragment"
         android:label="@string/menu_renal_clearance"
         tools:layout="@layout/fragment_renal_clearance" />
-
 </navigation>

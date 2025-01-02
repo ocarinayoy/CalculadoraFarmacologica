@@ -10,6 +10,7 @@ import com.TI2.famacologiccalc.database.dao.UsuarioDao
 import com.TI2.famacologiccalc.database.models.Pacientes
 import com.TI2.famacologiccalc.database.models.Usuarios
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.onEmpty
 import kotlinx.coroutines.launch
 
 @Database(entities = [Usuarios::class, Pacientes::class], version = 1)
@@ -28,28 +29,43 @@ abstract class AppDatabase : RoomDatabase() {
                     AppDatabase::class.java,
                     "famacologic_calc_database"
                 )
-                    .addCallback(DatabaseCallback(scope)) // Agregamos el Callback
+                    .addCallback(DatabaseCallback(scope)) // Llamamos al callback
                     .build()
                 INSTANCE = instance
+
+                // Llamamos explícitamente al método para insertar datos de prueba si no existen
+                scope.launch {
+                    insertSampleData(instance)
+                }
+
                 instance
             }
         }
-    }
 
-    private class DatabaseCallback(private val scope: CoroutineScope) : RoomDatabase.Callback() {
-        override fun onCreate(db: SupportSQLiteDatabase) {
-            super.onCreate(db)
-            INSTANCE?.let { database ->
-                scope.launch {
-                    populateDatabase(database.usuarioDao())
-                }
+        suspend fun insertSampleData(database: AppDatabase) {
+            val usuarioDao = database.usuarioDao()
+
+            // Verificamos si ya hay usuarios para no insertar duplicados
+            val existingUsers = usuarioDao.getAllUsuarios()  // Asumiendo que tienes un método `getAllUsuarios` en tu DAO
+
+            // Usamos la propiedad size para comprobar si la lista está vacía
+                // Insertamos datos de prueba solo si no hay usuarios
+                val usuario1 = Usuarios(id = 1, nombre = "a", email = "a@a.com", password = "a")
+                val usuario2 = Usuarios(id = 2, nombre = "testUser", email = "test@user.com", password = "test123")
+
+                usuarioDao.insertUsuarios(usuario1)
+                usuarioDao.insertUsuarios(usuario2)
+        }
+
+
+        private class DatabaseCallback(private val scope: CoroutineScope) :
+            RoomDatabase.Callback() {
+
+            override fun onCreate(db: SupportSQLiteDatabase) {
+                super.onCreate(db)
+                // Ya no insertamos aquí, porque lo hacemos en la función insertSampleData
             }
         }
-
-        suspend fun populateDatabase(usuarioDao: UsuarioDao) {
-            // Insertamos datos de prueba en la tabla Usuarios
-            usuarioDao.insertUsuarios(Usuarios(1, "admin","Admin", "root"))
-            usuarioDao.insertUsuarios(Usuarios(2, "Sergio","ocarinayoy12@gmail.com", "contraseña"))
-        }
     }
+
 }

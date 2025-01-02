@@ -4,64 +4,91 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.login.LoginFragment">
+    tools:context=".ui.register.RegisterFragment">
 
-    <!-- Título del Login -->
+    <!-- Título del Registro -->
     <TextView
         android:id="@+id/textViewTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Login"
+        android:text="Registro"
         android:textSize="24sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@id/editTextEmail"
+        app:layout_constraintBottom_toTopOf="@id/etUsername"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <!-- Campo de texto para el correo electrónico con icono de persona -->
+    <!-- Campo de texto para el nombre de usuario con icono -->
     <EditText
-        android:id="@+id/editTextEmail"
+        android:id="@+id/etUsername"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_person"
         android:drawablePadding="10dp"
-        android:hint="Email"
-        android:inputType="textEmailAddress"
+        android:hint="Nombre de usuario"
+        android:inputType="text"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@id/editTextPassword"
+        app:layout_constraintBottom_toTopOf="@id/etEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/textViewTitle" />
 
-    <!-- Campo de texto para la contraseña con icono de candado -->
     <EditText
-        android:id="@+id/editTextPassword"
+        android:id="@+id/etEmail"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_mail"
+        android:drawablePadding="10dp"
+        android:hint="Correo electrónico"
+        android:inputType="textEmailAddress"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@id/etPassword"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/etUsername" />
+
+    <EditText
+        android:id="@+id/etPassword"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_lock"
         android:drawablePadding="10dp"
-        android:hint="Password"
+        android:hint="Contraseña"
         android:inputType="textPassword"
         android:padding="16dp"
-        app:layout_constraintBottom_toTopOf="@id/buttonLogin"
+        app:layout_constraintBottom_toTopOf="@id/etEspecialidad"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextEmail" />
+        app:layout_constraintTop_toBottomOf="@id/etEmail" />
 
-    <!-- Botón de Login -->
+    <EditText
+        android:id="@+id/etEspecialidad"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_certified"
+        android:drawablePadding="10dp"
+        android:hint="Especialidad (opcional)"
+        android:inputType="text"
+        android:padding="16dp"
+        app:layout_constraintBottom_toTopOf="@id/etEmail"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btnRegister" />
+
+    <!-- Botón de registro -->
     <Button
-        android:id="@+id/buttonLogin"
+        android:id="@+id/btnRegister"
         android:layout_width="279dp"
         android:layout_height="63dp"
         android:padding="16dp"
-        android:text="Login"
+        android:text="Registrar"
         app:layout_constraintBottom_toTopOf="@id/textViewError"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
+        app:layout_constraintTop_toBottomOf="@id/etEspecialidad" />
 
-    <!-- Mensaje de error -->
+    <!-- Texto de error -->
     <TextView
         android:id="@+id/textViewError"
         android:layout_width="wrap_content"
@@ -72,19 +99,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonLogin" />
-
-    <!-- Enlace para registrarse (Sign Up) -->
-    <TextView
-        android:id="@+id/textViewSignUp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Don't have an account? Sign Up"
-        android:textColor="@android:color/holo_blue_dark"
-        android:textSize="16sp"
-        android:layout_marginTop="16dp"
-        app:layout_constraintTop_toBottomOf="@id/buttonLogin"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/btnRegister" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

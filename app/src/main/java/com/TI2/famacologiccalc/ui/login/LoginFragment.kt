@@ -8,14 +8,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
 import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.databinding.FragmentLoginBinding
 import com.TI2.famacologiccalc.database.models.Usuarios
+import com.TI2.famacologiccalc.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.withContext
 
 class LoginFragment : Fragment() {
@@ -40,29 +41,12 @@ class LoginFragment : Fragment() {
         val factory = LoginViewModelFactory(usuarioRepository)
         loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
 
-        // Imprimir "Hola Mundo" en la consola
-        Log.d("LoginFragment", "Hola Mundo")
-
-        // Insertar un usuario de prueba si la base de datos está vacía
-        CoroutineScope(Dispatchers.IO).launch {
-            // Comprobar si la base de datos tiene usuarios
-            val usuariosExistentes = usuarioRepository.allUsuarios
-            usuariosExistentes.collect { usuarios ->
-                if (usuarios.isEmpty()) {
-                    // Si no hay usuarios, insertar uno de prueba
-                    val usuario = Usuarios(id = 1, nombre = "Test", email = "test@prueba.com", password = "1234")
-                    usuarioRepository.insert(usuario)
-                    Log.d("LoginFragment", "Usuario de prueba insertado")
-                }
-            }
-        }
-
-        // Configurar el botón de login
+        // Configurar botón de login
         binding.buttonLogin.setOnClickListener {
             val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPassword.text.toString()
 
-            // Enviar los datos al ViewModel para hacer el login
+            // Enviar datos al ViewModel
             loginViewModel.login(email, password)
         }
 
@@ -71,25 +55,48 @@ class LoginFragment : Fragment() {
             if (result) {
                 // Login exitoso
                 Toast.makeText(context, "Login exitoso", Toast.LENGTH_SHORT).show()
+                Log.d("LoginFragment", "Login exitoso")
             } else {
                 // Error en el login
                 binding.textViewError.text = "Credenciales incorrectas"
+                Log.d("LoginFragment", "Credenciales incorrectas")
             }
         }
 
-        // Obtener y imprimir la lista de usuarios en consola
-        CoroutineScope(Dispatchers.IO).launch {
-            usuarioRepository.allUsuarios.collect { usuarios ->
-                withContext(Dispatchers.Main) {
-                    if (usuarios.isNotEmpty()) {
-                        usuarios.forEach { usuario ->
-                            Log.d("LoginFragment", "Usuario: ${usuario.email}, Contraseña: ${usuario.password}")
+        // Aquí podemos borrar la base de datos para reiniciar los datos
+        binding.textViewError.setOnClickListener {
+            // Borrar la base de datos de forma definitiva
+            CoroutineScope(Dispatchers.IO).launch {
+                // Borrar la base de datos
+                requireContext().deleteDatabase("famacologic_calc_database")
+                Log.d("LoginFragment", "Base de datos borrada")
+
+                // Volver a insertar usuarios de prueba después de borrar la base de datos
+                val usuario1 = Usuarios(id = 1, nombre = "admin", email = "admin@fama.com", password = "admin123")
+                val usuario2 = Usuarios(id = 2, nombre = "testUser", email = "test@user.com", password = "test123")
+                usuarioRepository.insert(usuario1)
+                usuarioRepository.insert(usuario2)
+                Log.d("LoginFragment", "Usuarios de prueba insertados después de borrar la base de datos")
+
+                // Imprimir la lista de usuarios después de la inserción
+                usuarioRepository.allUsuarios.collect { usuarios ->
+                    withContext(Dispatchers.Main) {
+                        if (usuarios.isNotEmpty()) {
+                            usuarios.forEach { usuario ->
+                                Log.d("LoginFragment", "Usuario: ${usuario.email}, Contraseña: ${usuario.password}")
+                            }
+                        } else {
+                            Log.d("LoginFragment", "No hay usuarios en la base de datos después de reiniciar.")
                         }
-                    } else {
-                        Log.d("LoginFragment", "No hay usuarios en la base de datos.")
                     }
                 }
             }
+        }
+
+        // Detectar clic en el enlace de "Sign Up"
+        binding.textViewSignUp.setOnClickListener {
+            // Navegar al fragmento de registro
+            findNavController().navigate(R.id.action_nav_login_to_nav_register)
         }
 
         return root

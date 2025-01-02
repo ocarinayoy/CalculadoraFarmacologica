@@ -9,14 +9,18 @@ class UsuarioViewModel(private val repository: UsuarioRepository) : ViewModel() 
 
     val allUsuarios: LiveData<List<Usuarios>> = repository.allUsuarios.asLiveData()
 
+    // Inserta un nuevo usuario
     fun insert(usuario: Usuarios) = viewModelScope.launch {
         repository.insert(usuario)
     }
 
-    fun delete(usuario: Usuarios) = viewModelScope.launch {
-        repository.delete(usuario)
+    // Elimina un usuario por su ID
+    fun delete(id: Long) = viewModelScope.launch {
+        // Llamamos al método del repositorio para eliminar por ID
+        repository.deleteById(id)
     }
 
+    // Actualiza un usuario
     fun update(usuario: Usuarios) = viewModelScope.launch {
         repository.update(usuario)
     }

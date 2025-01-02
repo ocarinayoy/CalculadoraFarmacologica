@@ -9,16 +9,19 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
 
     val allUsuarios: Flow<List<Usuarios>> = usuarioDao.getAllUsuarios()
 
+    // Función para insertar un nuevo usuario (registro)
     @WorkerThread
     suspend fun insert(usuario: Usuarios) {
         usuarioDao.insertUsuarios(usuario)
     }
 
+    // Función para eliminar un usuario por su ID
     @WorkerThread
-    suspend fun delete(usuario: Usuarios) {
-        usuarioDao.deleteUsuarios(usuario)
+    suspend fun deleteById(id: Long) {
+        usuarioDao.deleteUsuariosById(id)
     }
 
+    // Función para actualizar un usuario
     @WorkerThread
     suspend fun update(usuario: Usuarios) {
         usuarioDao.updateUsuarios(usuario)
