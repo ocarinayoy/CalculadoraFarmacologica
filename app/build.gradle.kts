@@ -1,6 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
+    id("kotlin-kapt") // Se agrega este plugin para habilitar kapt
 }
 
 android {
@@ -35,22 +36,32 @@ android {
     }
     buildFeatures {
         viewBinding = true
+        dataBinding = true
     }
 }
 
 dependencies {
+    implementation(libs.navigation.ui.ktx)
+    implementation(libs.androidx.navigation.fragment)
+    // Room
+    val roomVersion = "2.6.0" // Ajusta a la versión más reciente
+    implementation("androidx.room:room-runtime:$roomVersion")
+    kapt("androidx.room:room-compiler:$roomVersion") // Si usas Kotlin y necesitas anotaciones
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
-    implementation(libs.androidx.lifecycle.livedata.ktx)
-    implementation(libs.androidx.lifecycle.viewmodel.ktx)
-    implementation(libs.androidx.navigation.fragment.ktx)
-    implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.androidx.room.common)
-    implementation(libs.androidx.room.ktx)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    // Opcional: Soporte para coroutines
+    implementation("androidx.room:room-ktx:$roomVersion")
+
+    // Lifecycle
+    val lifecycleVersion = "2.8.7" // Ajusta a la versión más reciente
+    implementation("androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:$lifecycleVersion")
+    implementation("androidx.lifecycle:lifecycle-runtime-ktx:$lifecycleVersion")
+
+    // Otras dependencias necesarias
+    implementation("androidx.core:core-ktx:1.12.0")
+    implementation("com.google.android.material:material:1.11.0")
+
 }
+
+
+

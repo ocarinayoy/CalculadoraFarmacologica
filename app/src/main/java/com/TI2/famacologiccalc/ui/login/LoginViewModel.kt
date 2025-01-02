@@ -26,4 +26,6 @@ class LoginViewModel(private val repository: UsuarioRepository) : ViewModel() {
             _loginResult.postValue(usuario != null)
         }
     }
+
+
 }

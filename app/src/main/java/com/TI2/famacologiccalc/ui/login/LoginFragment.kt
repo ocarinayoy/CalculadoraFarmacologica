@@ -1,60 +1,102 @@
 package com.TI2.famacologiccalc.ui.login
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.TI2.famacologiccalc.database.DatabaseInstance
+import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.databinding.FragmentLoginBinding
+import com.TI2.famacologiccalc.database.models.Usuarios
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.withContext
 
 class LoginFragment : Fragment() {
 
-    // Variable para manejar el ViewBinding (permite acceder a las vistas del layout de forma segura)
     private var _binding: FragmentLoginBinding? = null
-    private val binding get() = _binding!! // Aseguramos que no es nulo
+    private val binding get() = _binding!!
 
-    // Variable para el ViewModel asociado al fragmento
     private lateinit var loginViewModel: LoginViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        // Inicializamos el ViewModel usando ViewModelProvider
-        loginViewModel = ViewModelProvider(this).get(LoginViewModel::class.java)
-
-        // Inflamos el layout usando el ViewBinding
         _binding = FragmentLoginBinding.inflate(inflater, container, false)
-        val root: View = binding.root // Obtenemos la vista raíz del layout inflado
+        val root: View = binding.root
 
-        // Configuramos el botón de login para que tome los datos de entrada y los envíe al ViewModel
+        // Inicializar la base de datos y el repositorio
+        val database = DatabaseInstance.getDatabase(requireContext())
+        val usuarioRepository = UsuarioRepository(database.usuarioDao())
+
+        // Crear el ViewModel con la fábrica
+        val factory = LoginViewModelFactory(usuarioRepository)
+        loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
+
+        // Imprimir "Hola Mundo" en la consola
+        Log.d("LoginFragment", "Hola Mundo")
+
+        // Insertar un usuario de prueba si la base de datos está vacía
+        CoroutineScope(Dispatchers.IO).launch {
+            // Comprobar si la base de datos tiene usuarios
+            val usuariosExistentes = usuarioRepository.allUsuarios
+            usuariosExistentes.collect { usuarios ->
+                if (usuarios.isEmpty()) {
+                    // Si no hay usuarios, insertar uno de prueba
+                    val usuario = Usuarios(id = 1, nombre = "Test", email = "test@prueba.com", password = "1234")
+                    usuarioRepository.insert(usuario)
+                    Log.d("LoginFragment", "Usuario de prueba insertado")
+                }
+            }
+        }
+
+        // Configurar el botón de login
         binding.buttonLogin.setOnClickListener {
-            // Extraemos el texto ingresado en los campos de email y contraseña
             val email = binding.editTextEmail.text.toString()
             val password = binding.editTextPassword.text.toString()
 
-            // Llamamos a la función de login en el ViewModel
+            // Enviar los datos al ViewModel para hacer el login
             loginViewModel.login(email, password)
         }
 
-        // Observamos el resultado del login desde el ViewModel
+        // Observar el resultado del login
         loginViewModel.loginResult.observe(viewLifecycleOwner) { result ->
             if (result) {
-                // Si el resultado es exitoso, mostramos un mensaje de éxito
+                // Login exitoso
                 Toast.makeText(context, "Login exitoso", Toast.LENGTH_SHORT).show()
             } else {
-                // Si el resultado es fallido, mostramos un mensaje de error en el TextView
+                // Error en el login
                 binding.textViewError.text = "Credenciales incorrectas"
             }
         }
 
-        return root // Retornamos la vista raíz del layout inflado
+        // Obtener y imprimir la lista de usuarios en consola
+        CoroutineScope(Dispatchers.IO).launch {
+            usuarioRepository.allUsuarios.collect { usuarios ->
+                withContext(Dispatchers.Main) {
+                    if (usuarios.isNotEmpty()) {
+                        usuarios.forEach { usuario ->
+                            Log.d("LoginFragment", "Usuario: ${usuario.email}, Contraseña: ${usuario.password}")
+                        }
+                    } else {
+                        Log.d("LoginFragment", "No hay usuarios en la base de datos.")
+                    }
+                }
+            }
+        }
+
+        return root
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
-        _binding = null // Liberamos el binding cuando la vista se destruye para evitar fugas de memoria
+        _binding = null // Liberar el binding
     }
 }
