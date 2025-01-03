@@ -6,15 +6,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.TI2.famacologiccalc.MainActivity
+import com.TI2.famacologiccalc.R
 import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.databinding.FragmentLoginBinding
 import com.TI2.famacologiccalc.database.models.Usuarios
-import com.TI2.famacologiccalc.R
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -57,6 +57,9 @@ class LoginFragment : Fragment() {
                 // Login exitoso
                 Toast.makeText(context, "Login exitoso", Toast.LENGTH_SHORT).show()
                 Log.d("LoginFragment", "Login exitoso")
+
+                // Navegar al HomeFragment después del login exitoso
+                findNavController().navigate(R.id.action_nav_login_to_nav_home)
             } else {
                 // Error en el login
                 binding.textViewError.text = "Credenciales incorrectas"
@@ -101,6 +104,18 @@ class LoginFragment : Fragment() {
         }
 
         return root
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Ocultar el FAB en este fragmento
+        (activity as MainActivity).setFabVisibility(false)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Restaurar el FAB cuando este fragmento ya no esté visible
+        (activity as MainActivity).setFabVisibility(true)
     }
 
     override fun onDestroyView() {

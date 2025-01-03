@@ -63,4 +63,13 @@ class MainActivity : AppCompatActivity() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
         return navController.navigateUp(appBarConfiguration) || super.onSupportNavigateUp()
     }
+
+    fun setFabVisibility(visible: Boolean) {
+        // Controla la visibilidad del FAB desde cualquier fragmento
+        if (visible) {
+            binding.appBarMain.fab.show()
+        } else {
+            binding.appBarMain.fab.hide()
+        }
+    }
 }

@@ -7,10 +7,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.TI2.famacologiccalc.MainActivity
 import com.TI2.famacologiccalc.R
 import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
@@ -27,11 +27,9 @@ class RegisterFragment : Fragment() {
     private lateinit var registerViewModel: RegisterViewModel
 
     override fun onCreateView(
-
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // (activity as AppCompatActivity).supportActionBar?.hide()
         return inflater.inflate(R.layout.fragment_register, container, false)
     }
 
@@ -53,18 +51,6 @@ class RegisterFragment : Fragment() {
         val factory = ViewModelFactory(usuarioRepository)
         registerViewModel = ViewModelProvider(this, factory).get(RegisterViewModel::class.java)
 
-        // Observar el resultado del registro
-        registerViewModel.registerResult.observe(viewLifecycleOwner, { result ->
-            if (result) {
-                // Registro exitoso, redirigir al login o pantalla principal
-                Toast.makeText(requireContext(), "Usuario registrado exitosamente", Toast.LENGTH_SHORT).show()
-                findNavController().navigate(R.id.action_registerFragment_to_loginFragment)
-            } else {
-                // Usuario ya existe
-                Toast.makeText(requireContext(), "El usuario ya existe", Toast.LENGTH_SHORT).show()
-            }
-        })
-
         // Acción al presionar el botón de registro
         btnRegister.setOnClickListener {
             val username = etUsername.text.toString().trim()
@@ -79,5 +65,17 @@ class RegisterFragment : Fragment() {
                 registerViewModel.register(username, email, password, especialidad)
             }
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        // Ocultar el FAB en este fragmento
+        (activity as MainActivity).setFabVisibility(false)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        // Restaurar el FAB cuando este fragmento ya no esté visible
+        (activity as MainActivity).setFabVisibility(true)
     }
 }
