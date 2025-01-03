@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -26,9 +27,11 @@ class RegisterFragment : Fragment() {
     private lateinit var registerViewModel: RegisterViewModel
 
     override fun onCreateView(
+
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        // (activity as AppCompatActivity).supportActionBar?.hide()
         return inflater.inflate(R.layout.fragment_register, container, false)
     }
 
