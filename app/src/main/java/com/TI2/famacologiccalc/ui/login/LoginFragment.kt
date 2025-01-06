@@ -15,6 +15,7 @@ import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.databinding.FragmentLoginBinding
 import com.TI2.famacologiccalc.database.models.Usuarios
+import com.TI2.famacologiccalc.ui.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -39,7 +40,7 @@ class LoginFragment : Fragment() {
         val usuarioRepository = UsuarioRepository(database.usuarioDao())
 
         // Crear el ViewModel con la fábrica
-        val factory = LoginViewModelFactory(usuarioRepository)
+        val factory = ViewModelFactory(usuarioRepository)
         loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
 
         // Configurar botón de login
