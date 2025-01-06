@@ -5,7 +5,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
@@ -15,6 +14,7 @@ import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.databinding.FragmentLoginBinding
 import com.TI2.famacologiccalc.database.models.Usuarios
+import com.TI2.famacologiccalc.sesion.ActualSession
 import com.TI2.famacologiccalc.ui.ViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -52,21 +52,26 @@ class LoginFragment : Fragment() {
             loginViewModel.login(email, password)
         }
 
+
         // Observar el resultado del login
-        loginViewModel.loginResult.observe(viewLifecycleOwner) { result ->
-            if (result) {
-                // Login exitoso
-                Toast.makeText(context, "Login exitoso", Toast.LENGTH_SHORT).show()
-                Log.d("LoginFragment", "Login exitoso")
+        loginViewModel.usuarioLogueado.observe(viewLifecycleOwner) { usuario ->
+            if (usuario != null) {
+                Log.d("LoginFragment", "Usuario logeado: ${usuario.nombre}, Email: ${usuario.email}")
+
+                // Guardar el usuario en la sesión actual
+                ActualSession.usuarioLogeado = usuario
+
+                // Actualizar el header de la MainActivity (asegúrate de que esté disponible)
+                (activity as? MainActivity)?.updateNavHeader()
 
                 // Navegar al HomeFragment después del login exitoso
                 findNavController().navigate(R.id.action_nav_login_to_nav_home)
             } else {
                 // Error en el login
                 binding.textViewError.text = "Credenciales incorrectas"
-                Log.d("LoginFragment", "Credenciales incorrectas")
             }
         }
+
 
         // Aquí podemos borrar la base de datos para reiniciar los datos
         binding.textViewError.setOnClickListener {

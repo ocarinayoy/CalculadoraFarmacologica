@@ -4,28 +4,36 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.TI2.famacologiccalc.database.models.Usuarios
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import kotlinx.coroutines.launch
 
 class LoginViewModel(private val repository: UsuarioRepository) : ViewModel() {
 
-    // Variable privada para manejar el estado del login (mutable)
     private val _loginResult = MutableLiveData<Boolean>()
-
-    // Variable pública para exponer el resultado del login (inmutable)
     val loginResult: LiveData<Boolean> = _loginResult
 
-    // Función para manejar el login. Recibe email y contraseña como parámetros
-    fun login(email: String, password: String) {
-        // Usamos viewModelScope para manejar la operación en un hilo de fondo
-        viewModelScope.launch {
-            // Llamamos al repositorio para verificar si las credenciales son correctas
-            val usuario = repository.loginUsuario(email, password)
+    private val _usuarioLogueado = MutableLiveData<Usuarios?>()
+    val usuarioLogueado: LiveData<Usuarios?> = _usuarioLogueado
 
-            // Publicamos el resultado (true si el usuario existe, false si no)
-            _loginResult.postValue(usuario != null)
+    fun login(email: String, password: String) {
+        viewModelScope.launch {
+            val usuario = repository.loginUsuario(email, password)
+            if (usuario != null) {
+                _loginResult.postValue(true)
+                _usuarioLogueado.postValue(usuario) // Guardar usuario logeado
+            } else {
+                _loginResult.postValue(false)
+                _usuarioLogueado.postValue(null) // Borrar cualquier usuario previo
+            }
         }
     }
 
-
+    fun logout() {
+        _usuarioLogueado.postValue(null) // Limpiar usuario logeado
+    }
 }
+
+
+
+

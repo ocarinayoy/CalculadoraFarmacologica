@@ -2,6 +2,7 @@ package com.TI2.famacologiccalc
 
 import android.os.Bundle
 import android.view.Menu
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -9,7 +10,9 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+
 import com.TI2.famacologiccalc.databinding.ActivityMainBinding
+import com.TI2.famacologiccalc.sesion.ActualSession
 
 class MainActivity : AppCompatActivity() {
 
@@ -40,8 +43,12 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_renal_clearance
             ), drawerLayout
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.navView.setupWithNavController(navController)
+
+        // Llamar a updateNavHeader para inicializar el header con los datos de sesión
+        updateNavHeader()
 
         // Agregar listener para detectar cuando el fragmento cambia
         navController.addOnDestinationChangedListener { _, destination, _ ->
@@ -52,6 +59,20 @@ class MainActivity : AppCompatActivity() {
                 supportActionBar?.show() // Mostrar el Toolbar en otros fragmentos
             }
         }
+    }
+
+    // Función fuera de onCreate para ser accesible globalmente
+    fun updateNavHeader() {
+        // Obtén la vista del header del NavigationView
+        val headerView = binding.navView.getHeaderView(0)
+
+        // Encuentra los TextViews del header
+        val userNameTextView = headerView.findViewById<TextView>(R.id.etUsername)
+        val userEmailTextView = headerView.findViewById<TextView>(R.id.etEmail)
+
+        // Actualiza el texto con los datos del usuario logueado
+        userNameTextView.text = ActualSession.usuarioLogeado?.nombre ?: "Nombre no disponible"
+        userEmailTextView.text = ActualSession.usuarioLogeado?.email ?: "Correo no disponible"
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
