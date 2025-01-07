@@ -3,7 +3,10 @@ package com.TI2.famacologiccalc
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
@@ -11,9 +14,12 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-
 import com.TI2.famacologiccalc.databinding.ActivityMainBinding
 import com.TI2.famacologiccalc.sesion.ActualSession
+import com.TI2.famacologiccalc.database.DatabaseInstance
+import com.TI2.famacologiccalc.database.repositories.PacienteRepository
+import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class MainActivity : AppCompatActivity() {
 
@@ -60,6 +66,11 @@ class MainActivity : AppCompatActivity() {
                 supportActionBar?.show() // Mostrar el Toolbar en otros fragmentos
             }
         }
+
+        // Agregar listener para el FAB y mostrar el BottomSheetDialog
+        binding.appBarMain.fab.setOnClickListener {
+            mostrarRegistroPaciente()
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -81,9 +92,7 @@ class MainActivity : AppCompatActivity() {
     // Función para navegar al fragmento de configuración
     fun navigateToSettingsFragment() {
         val navController = findNavController(R.id.nav_host_fragment_content_main)
-        navController.navigate(R.id.
-
-        nav_settings) // Asegúrate de que el ID del fragmento sea correcto
+        navController.navigate(R.id.nav_settings) // Asegúrate de que el ID del fragmento sea correcto
     }
 
     // Función fuera de onCreate para ser accesible globalmente
@@ -112,5 +121,51 @@ class MainActivity : AppCompatActivity() {
         } else {
             binding.appBarMain.fab.hide()
         }
+    }
+
+    // Función para mostrar el BottomSheetDialog con el formulario de registro de paciente
+    private fun mostrarRegistroPaciente() {
+        // Inflar el layout del registro de paciente
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_registro_paciente, null)
+
+        // Crear el BottomSheetDialog
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        // Configurar los campos del BottomSheet
+        val etNombrePaciente = bottomSheetView.findViewById<EditText>(R.id.etNombrePaciente)
+        val etEdadPaciente = bottomSheetView.findViewById<EditText>(R.id.etEdadPaciente)
+        val etPesoPaciente = bottomSheetView.findViewById<EditText>(R.id.etPesoPaciente)
+        val etAlturaPaciente = bottomSheetView.findViewById<EditText>(R.id.etAlturaPaciente)
+
+        // Configurar el botón de registro
+        val btnRegistrarPaciente = bottomSheetView.findViewById<Button>(R.id.btnRegistrarPaciente)
+        btnRegistrarPaciente.setOnClickListener {
+            val nombre = etNombrePaciente.text.toString()
+            val edad = etEdadPaciente.text.toString().toIntOrNull()
+            val peso = etPesoPaciente.text.toString().toDoubleOrNull()
+            val altura = etAlturaPaciente.text.toString().toDoubleOrNull()
+
+            if (nombre.isNotEmpty() && edad != null && peso != null) {
+                // Aquí podrías agregar la lógica para registrar el paciente en la base de datos
+                val database = DatabaseInstance.getDatabase(this)
+                val pacienteRepository = PacienteRepository(database.pacienteDao())
+                val pacienteViewModel = PacienteViewModel(pacienteRepository)
+
+                // Asociar el paciente con el usuario logueado
+                val usuarioId = ActualSession.usuarioLogeado?.id ?: return@setOnClickListener
+
+                // Registrar el paciente
+                pacienteViewModel.registrarPaciente(nombre, edad, peso, altura, usuarioId)
+                Toast.makeText(this, "Paciente registrado exitosamente", Toast.LENGTH_SHORT).show()
+
+                bottomSheetDialog.dismiss() // Cerrar el BottomSheet después del registro
+            } else {
+                Toast.makeText(this, "Por favor, completa todos los campos correctamente", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Mostrar el BottomSheet
+        bottomSheetDialog.show()
     }
 }

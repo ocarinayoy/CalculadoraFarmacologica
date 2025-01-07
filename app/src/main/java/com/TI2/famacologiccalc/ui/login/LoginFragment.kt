@@ -36,7 +36,7 @@ class LoginFragment : Fragment() {
         val usuarioRepository = UsuarioRepository(database.usuarioDao())
 
         // Crear el ViewModel con la fábrica
-        val factory = ViewModelFactory(usuarioRepository)
+        val factory = ViewModelFactory(usuarioRepository,null)
         loginViewModel = ViewModelProvider(this, factory).get(LoginViewModel::class.java)
 
         // Configurar botón de login

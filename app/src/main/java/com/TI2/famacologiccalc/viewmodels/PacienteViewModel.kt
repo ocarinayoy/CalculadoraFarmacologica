@@ -20,14 +20,24 @@ class PacienteViewModel(private val repository: PacienteRepository) : ViewModel(
     fun update(paciente: Pacientes) = viewModelScope.launch {
         repository.update(paciente)
     }
-}
 
-class PacienteViewModelFactory(private val repository: PacienteRepository) : ViewModelProvider.Factory {
-    override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(PacienteViewModel::class.java)) {
-            @Suppress("UNCHECKED_CAST")
-            return PacienteViewModel(repository) as T
-        }
-        throw IllegalArgumentException("Unknown ViewModel class")
+    // Nueva función para registrar un paciente
+    fun registrarPaciente(
+        nombre: String,
+        edad: Int,
+        peso: Double,
+        altura: Double?,
+        usuarioId: Long
+    ) {
+        val nuevoPaciente = Pacientes(
+            nombre = nombre,
+            edad = edad,
+            peso = peso,
+            altura = altura,
+            usuarioId = usuarioId
+        )
+
+        // Insertar el nuevo paciente en la base de datos
+        insert(nuevoPaciente)
     }
 }

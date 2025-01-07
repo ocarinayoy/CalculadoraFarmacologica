@@ -36,7 +36,7 @@ class SettingsFragment : Fragment() {
         val usuarioRepository = UsuarioRepository(database.usuarioDao())
 
         // Usar el ViewModelFactory para crear el SettingsViewModel
-        val factory = ViewModelFactory(usuarioRepository)
+        val factory = ViewModelFactory(usuarioRepository,null)
         settingsViewModel = ViewModelProvider(this, factory).get(SettingsViewModel::class.java)
 
         // Cargar datos del usuario logueado en los EditText

@@ -48,7 +48,7 @@ class RegisterFragment : Fragment() {
         val usuarioRepository = UsuarioRepository(database.usuarioDao())
 
         // Usar el ViewModelFactory para crear el RegisterViewModel
-        val factory = ViewModelFactory(usuarioRepository)
+        val factory = ViewModelFactory(usuarioRepository,null)
         registerViewModel = ViewModelProvider(this, factory).get(RegisterViewModel::class.java)
 
         // Acción al presionar el botón de registro
@@ -63,6 +63,8 @@ class RegisterFragment : Fragment() {
             } else {
                 // Llamar al ViewModel para registrar el usuario
                 registerViewModel.register(username, email, password, especialidad)
+                // Navegar al login luego del registro exitoso
+                findNavController().navigate(R.id.action_nav_register_to_nav_login)
             }
         }
     }

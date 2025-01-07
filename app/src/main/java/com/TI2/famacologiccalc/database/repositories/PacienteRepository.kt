@@ -23,4 +23,17 @@ class PacienteRepository(private val pacienteDao: PacienteDao) {
     suspend fun update(paciente: Pacientes) {
         pacienteDao.updatePacientes(paciente)
     }
+
+    // Nuevo método para registrar paciente
+    @WorkerThread
+    suspend fun registrarPaciente(nombre: String, edad: Int, peso: Double, altura: Double?, usuarioId: Long) {
+        val paciente = Pacientes(
+            nombre = nombre,
+            edad = edad,
+            peso = peso,
+            altura = altura,
+            usuarioId = usuarioId
+        )
+        insert(paciente)
+    }
 }
