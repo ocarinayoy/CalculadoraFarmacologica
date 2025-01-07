@@ -18,6 +18,10 @@
     <string name="menu_renal_clearance">Ajuste por aclaramiento renal</string>
     <string name="menu_weighted_dosage">Dosis ponderada diaria</string>
 
+    <string name="settings">Ajustes</string>
+
+
+
     <string name="news_image_desc">Imagen de la noticia</string>
 
 </resources>

@@ -88,4 +88,14 @@
         android:name="com.TI2.famacologiccalc.ui.renalclearance.RenalClearanceFragment"
         android:label="@string/menu_renal_clearance"
         tools:layout="@layout/fragment_renal_clearance" />
+
+    <fragment
+        android:id="@+id/nav_settings"
+        android:name="com.TI2.famacologiccalc.ui.settings.SettingsFragment"
+        android:label="@string/settings"
+        tools:layout="@layout/fragment_settings" >
+        <action
+            android:id="@+id/action_nav_settings_to_nav_login"
+            app:destination="@id/nav_login" />
+    </fragment>
 </navigation>

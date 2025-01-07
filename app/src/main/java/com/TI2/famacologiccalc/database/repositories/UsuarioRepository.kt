@@ -32,4 +32,22 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
     suspend fun loginUsuario(email: String, password: String): Usuarios? {
         return usuarioDao.getUsuarioByEmailAndPassword(email, password)
     }
+
+    // Nueva función: Obtener un usuario por su ID
+    @WorkerThread
+    suspend fun getUsuarioById(id: Long): Usuarios? {
+        return usuarioDao.getUsuarioById(id)
+    }
+
+    // Nueva función: Actualizar nombre, email y especialidad del usuario
+    @WorkerThread
+    suspend fun updateUsuarioData(id: Long, nombre: String, email: String, especialidad: String?) {
+        val usuario = getUsuarioById(id)
+        if (usuario != null) {
+            usuario.nombre = nombre
+            usuario.email = email
+            usuario.especialidad = especialidad
+            usuarioDao.updateUsuarios(usuario)
+        }
+    }
 }

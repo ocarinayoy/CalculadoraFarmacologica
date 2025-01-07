@@ -2,6 +2,7 @@ package com.TI2.famacologiccalc
 
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.fragment.NavHostFragment
@@ -61,6 +62,30 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        return when (item.itemId) {
+            R.id.action_settings -> {
+                // Acción cuando se selecciona el ítem de configuración
+                navigateToSettingsFragment()
+                true
+            }
+            else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    // Función para navegar al fragmento de configuración
+    fun navigateToSettingsFragment() {
+        val navController = findNavController(R.id.nav_host_fragment_content_main)
+        navController.navigate(R.id.
+
+        nav_settings) // Asegúrate de que el ID del fragmento sea correcto
+    }
+
     // Función fuera de onCreate para ser accesible globalmente
     fun updateNavHeader() {
         // Obtén la vista del header del NavigationView
@@ -73,11 +98,6 @@ class MainActivity : AppCompatActivity() {
         // Actualiza el texto con los datos del usuario logueado
         userNameTextView.text = ActualSession.usuarioLogeado?.nombre ?: "Nombre no disponible"
         userEmailTextView.text = ActualSession.usuarioLogeado?.email ?: "Correo no disponible"
-    }
-
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main, menu)
-        return true
     }
 
     override fun onSupportNavigateUp(): Boolean {

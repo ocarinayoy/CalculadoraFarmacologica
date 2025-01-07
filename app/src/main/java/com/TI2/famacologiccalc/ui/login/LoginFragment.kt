@@ -13,13 +13,9 @@ import com.TI2.famacologiccalc.R
 import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.databinding.FragmentLoginBinding
-import com.TI2.famacologiccalc.database.models.Usuarios
 import com.TI2.famacologiccalc.sesion.ActualSession
 import com.TI2.famacologiccalc.ui.ViewModelFactory
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
+
 
 class LoginFragment : Fragment() {
 
@@ -69,37 +65,6 @@ class LoginFragment : Fragment() {
             } else {
                 // Error en el login
                 binding.textViewError.text = "Credenciales incorrectas"
-            }
-        }
-
-
-        // Aquí podemos borrar la base de datos para reiniciar los datos
-        binding.textViewError.setOnClickListener {
-            // Borrar la base de datos de forma definitiva
-            CoroutineScope(Dispatchers.IO).launch {
-                // Borrar la base de datos
-                requireContext().deleteDatabase("famacologic_calc_database")
-                Log.d("LoginFragment", "Base de datos borrada")
-
-                // Volver a insertar usuarios de prueba después de borrar la base de datos
-                val usuario1 = Usuarios(id = 1, nombre = "admin", email = "admin@fama.com", password = "admin123")
-                val usuario2 = Usuarios(id = 2, nombre = "testUser", email = "test@user.com", password = "test123")
-                usuarioRepository.insert(usuario1)
-                usuarioRepository.insert(usuario2)
-                Log.d("LoginFragment", "Usuarios de prueba insertados después de borrar la base de datos")
-
-                // Imprimir la lista de usuarios después de la inserción
-                usuarioRepository.allUsuarios.collect { usuarios ->
-                    withContext(Dispatchers.Main) {
-                        if (usuarios.isNotEmpty()) {
-                            usuarios.forEach { usuario ->
-                                Log.d("LoginFragment", "Usuario: ${usuario.email}, Contraseña: ${usuario.password}")
-                            }
-                        } else {
-                            Log.d("LoginFragment", "No hay usuarios en la base de datos después de reiniciar.")
-                        }
-                    }
-                }
             }
         }
 

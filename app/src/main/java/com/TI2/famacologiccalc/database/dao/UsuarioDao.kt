@@ -16,13 +16,19 @@ interface UsuarioDao {
     @Update
     suspend fun updateUsuarios(usuario: Usuarios)
 
-    // Cambiar la función de eliminación para usar el ID
+    // Eliminar usuario por ID
     @Query("DELETE FROM usuarios WHERE id = :id")
     suspend fun deleteUsuariosById(id: Long)
 
+    // Verificar usuario por email y contraseña (login)
     @Query("SELECT * FROM usuarios WHERE email = :email AND password = :password LIMIT 1")
     suspend fun getUsuarioByEmailAndPassword(email: String, password: String): Usuarios?
 
+    // Obtener todos los usuarios
     @Query("SELECT * FROM usuarios")
     fun getAllUsuarios(): Flow<List<Usuarios>>
+
+    // Nueva función: Obtener un usuario por su ID
+    @Query("SELECT * FROM usuarios WHERE id = :id LIMIT 1")
+    suspend fun getUsuarioById(id: Long): Usuarios?
 }
