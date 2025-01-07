@@ -80,6 +80,7 @@ class SettingsFragment : Fragment() {
         // Botón para cerrar sesión
         binding.btnLogout.setOnClickListener {
             ActualSession.usuarioLogeado = null // Limpiar datos de sesión
+            ActualSession.isLoggedIn = false
             findNavController().navigate(R.id.action_nav_settings_to_nav_login)
         }
 

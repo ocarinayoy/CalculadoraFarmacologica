@@ -56,6 +56,7 @@ class LoginFragment : Fragment() {
 
                 // Guardar el usuario en la sesión actual
                 ActualSession.usuarioLogeado = usuario
+                ActualSession.isLoggedIn = true
 
                 // Actualizar el header de la MainActivity (asegúrate de que esté disponible)
                 (activity as? MainActivity)?.updateNavHeader()
