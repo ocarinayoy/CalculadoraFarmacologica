@@ -25,7 +25,7 @@ class WeightedDosageViewModel : ViewModel() {
         // Validar que todos los valores sean válidos
         if (weightValue > 0 && dosagePerKgValue > 0 && frequencyValue > 0) {
             // Calcular la dosificación diaria total en mg
-            val totalDosage = weightValue * dosagePerKgValue * frequencyValue
+            val totalDosage = weightValue * dosagePerKgValue / frequencyValue
             _result.value = "Dosificación diaria total: $totalDosage mg"
         } else {
             _result.value = "Por favor, ingrese valores válidos."

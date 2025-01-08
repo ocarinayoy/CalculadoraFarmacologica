@@ -34,116 +34,109 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="8dp" />
 
-    <!-- Peso del paciente -->
-    <!-- Modo lectura -->
-
-    <!-- Modo edición -->
-
-    <!-- Dosificación por Kg -->
-    <!-- Modo lectura -->
     <TextView
         android:id="@+id/tvWeight"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:padding="12dp"
-        android:text="Peso: 0"
-        android:textSize="16sp"
+        android:drawableStart="@drawable/ic_weight"
+        android:drawablePadding="10dp"
+        android:hint="Peso del paciente (kg)"
+        android:inputType="numberDecimal"
+        android:padding="16dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.937"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvEditToggle" />
 
+
     <EditText
         android:id="@+id/etWeight"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="20dp"
-        android:hint="Ingrese el peso"
+        android:drawableStart="@drawable/ic_weight"
+        android:drawablePadding="10dp"
+        android:hint="Peso del paciente (kg)"
         android:inputType="numberDecimal"
-        android:padding="12dp"
-        android:textSize="16sp"
+        android:padding="16dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvEditToggle" />
+        app:layout_constraintTop_toBottomOf="@+id/tvEditToggle" />
 
     <TextView
         android:id="@+id/tvDosage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:padding="12dp"
-        android:text="Dosificación: 0"
-        android:textSize="16sp"
+        android:drawableStart="@drawable/ic_medicine"
+        android:drawablePadding="10dp"
+        android:hint="Dosificación mg/kg"
+        android:inputType="numberDecimal"
+        android:padding="16dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvWeight" />
-
-    <!-- Modo edición -->
-
-    <!-- Frecuencia diaria -->
-    <!-- Modo lectura -->
+        app:layout_constraintTop_toBottomOf="@+id/tvWeight" />
 
     <EditText
         android:id="@+id/etDosage"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="20dp"
-        android:hint="Ingrese la dosificación"
+        android:layout_marginTop="16dp"
+        android:drawableStart="@drawable/ic_medicine"
+        android:drawablePadding="10dp"
+        android:hint="Dosificación mg/kg"
         android:inputType="numberDecimal"
-        android:padding="12dp"
-        android:textSize="16sp"
+        android:padding="16dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etWeight" />
+
 
     <TextView
         android:id="@+id/tvFrequency"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
         android:layout_marginTop="16dp"
-        android:padding="12dp"
-        android:text="Frecuencia diaria: 0"
-        android:textSize="16sp"
+        android:drawableStart="@drawable/ic_time"
+        android:drawablePadding="10dp"
+        android:hint="Veces al día"
+        android:inputType="numberDecimal"
+        android:padding="16dp"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvDosage" />
+        app:layout_constraintTop_toBottomOf="@+id/tvDosage" />
 
-    <!-- Modo edición -->
     <EditText
         android:id="@+id/etFrequency"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="20dp"
-        android:hint="Ingrese la frecuencia diaria"
+        android:layout_marginTop="16dp"
+        android:drawableStart="@drawable/ic_time"
+        android:drawablePadding="10dp"
+        android:hint="Veces al día"
         android:inputType="numberDecimal"
-        android:padding="12dp"
-        android:textSize="16sp"
+        android:padding="16dp"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/etDosage" />
 
-    <!-- Botón para calcular -->
-
-    <!-- Resultado -->
-
     <Button
         android:id="@+id/btnCalculate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="200dp"
+        android:layout_width="361dp"
+        android:layout_height="62dp"
+        android:layout_marginTop="236dp"
         android:text="Calcular"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
