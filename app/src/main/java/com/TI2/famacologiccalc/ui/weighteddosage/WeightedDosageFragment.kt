@@ -5,34 +5,91 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.activityViewModels
 import com.TI2.famacologiccalc.databinding.FragmentWeighteddosageBinding
 
 class WeightedDosageFragment : Fragment() {
 
     private var _binding: FragmentWeighteddosageBinding? = null
-
-    // This property is only valid between onCreateView and
-    // onDestroyView.
     private val binding get() = _binding!!
 
+    private var isEditMode = false
+
+    // ViewModel compartido
+    private val viewModel: WeightedDosageViewModel by activityViewModels()
+
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
+        inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val weightedDosageViewModel =
-            ViewModelProvider(this).get(WeightedDosageViewModel::class.java)
-
         _binding = FragmentWeighteddosageBinding.inflate(inflater, container, false)
-        val root: View = binding.root
 
-        val textView: TextView = binding.textWeighteddosage
-        weightedDosageViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        // Observar cambios en el resultado
+        viewModel.result.observe(viewLifecycleOwner, { result ->
+            binding.tvResult.text = result
+        })
+
+        setupToggleEditMode()
+        setupCalculateButton()
+
+        return binding.root
+    }
+
+    private fun setupToggleEditMode() {
+        binding.tvEditToggle.setOnClickListener {
+            isEditMode = !isEditMode
+            toggleFields(isEditMode)
         }
-        return root
+    }
+
+    private fun toggleFields(editMode: Boolean) {
+        toggleField(binding.tvWeight, binding.etWeight, editMode)
+        toggleField(binding.tvDosage, binding.etDosage, editMode)
+        toggleField(binding.tvFrequency, binding.etFrequency, editMode)
+
+        binding.tvEditToggle.text = if (editMode) "Guardar" else "Editar"
+    }
+
+    private fun toggleField(tv: TextView, et: EditText, editMode: Boolean) {
+        if (editMode) {
+            et.visibility = View.VISIBLE
+            tv.visibility = View.GONE
+            et.setText(tv.text.toString().replace(Regex("[^0-9.]"), ""))
+        } else {
+            tv.visibility = View.VISIBLE
+            et.visibility = View.GONE
+            tv.text = when (tv.id) {
+                binding.tvWeight.id -> "Peso: ${et.text}"
+                binding.tvDosage.id -> "Dosificación: ${et.text}"
+                binding.tvFrequency.id -> "Frecuencia diaria: ${et.text}"
+                else -> ""
+            }
+        }
+    }
+
+    private fun setupCalculateButton() {
+        binding.btnCalculate.setOnClickListener {
+            // Capturar los valores de los EditText y convertirlos a los tipos apropiados
+            val weightValue = binding.etWeight.text.toString().toDoubleOrNull() ?: 0.0
+            val dosageValue = binding.etDosage.text.toString().toDoubleOrNull() ?: 0.0
+            val frequencyValue = binding.etFrequency.text.toString().toIntOrNull() ?: 0
+
+            // Verificar que los valores sean válidos antes de enviarlos al ViewModel
+            if (weightValue > 0 && dosageValue > 0 && frequencyValue > 0) {
+                // Actualizar el ViewModel con los valores
+                viewModel.weight.value = weightValue.toString()
+                viewModel.dosagePerKg.value = dosageValue.toString()
+                viewModel.frequency.value = frequencyValue.toString()
+
+                // Calcular la dosificación
+                viewModel.calculateDosage()
+            } else {
+                // Mostrar mensaje de error si los valores no son válidos
+                binding.tvResult.text = "Por favor, ingrese valores válidos."
+            }
+        }
     }
 
     override fun onDestroyView() {
