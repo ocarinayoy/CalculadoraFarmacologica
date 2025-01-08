@@ -7,34 +7,33 @@ import kotlinx.coroutines.flow.Flow
 
 class PacienteRepository(private val pacienteDao: PacienteDao) {
 
+    // Obtener todos los pacientes
     val allPacientes: Flow<List<Pacientes>> = pacienteDao.getAllPacientes()
 
-    // Nueva función para obtener el paciente asociado a un usuario
-    fun obtenerPacientePorUsuario(usuarioId: Long): Flow<Pacientes?> {
-        return pacienteDao.getPacienteByUsuarioId(usuarioId)
+    // Obtener todos los pacientes registrados por un usuario específico
+    fun obtenerPacientesPorUsuario(usuarioId: Long): Flow<List<Pacientes>> {
+        return pacienteDao.getPacientesByUsuarioId(usuarioId)
     }
 
-    // Obtener todos los pacientes
-    fun obtenerTodosLosPacientes(): Flow<List<Pacientes>> {
-        return pacienteDao.getAllPacientes()
-    }
-
+    // Insertar un nuevo paciente
     @WorkerThread
     suspend fun insert(paciente: Pacientes) {
         pacienteDao.insertPacientes(paciente)
     }
 
+    // Eliminar un paciente
     @WorkerThread
     suspend fun delete(paciente: Pacientes) {
         pacienteDao.deletePacientes(paciente)
     }
 
+    // Actualizar un paciente
     @WorkerThread
     suspend fun update(paciente: Pacientes) {
         pacienteDao.updatePacientes(paciente)
     }
 
-    // Registrar un nuevo paciente con los nuevos campos
+    // Registrar un nuevo paciente con los campos completos
     @WorkerThread
     suspend fun registrarPaciente(
         nombre: String,
@@ -56,6 +55,4 @@ class PacienteRepository(private val pacienteDao: PacienteDao) {
         )
         insert(paciente)
     }
-
-
 }

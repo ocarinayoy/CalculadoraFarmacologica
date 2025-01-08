@@ -7,26 +7,35 @@ import kotlinx.coroutines.launch
 
 class PacienteViewModel(private val repository: PacienteRepository) : ViewModel() {
 
+    // Obtener todos los pacientes como LiveData
     val allPacientes: LiveData<List<Pacientes>> = repository.allPacientes.asLiveData()
+
+    // Obtener pacientes registrados por un usuario específico
+    fun obtenerPacientesPorUsuario(usuarioId: Long): LiveData<List<Pacientes>> {
+        return repository.obtenerPacientesPorUsuario(usuarioId).asLiveData()
+    }
 
     // Función que expone los pacientes como LiveData
     fun obtenerPacientes(): LiveData<List<Pacientes>> {
         return allPacientes
     }
 
+    // Insertar un nuevo paciente
     fun insert(paciente: Pacientes) = viewModelScope.launch {
         repository.insert(paciente)
     }
 
+    // Eliminar un paciente
     fun delete(paciente: Pacientes) = viewModelScope.launch {
         repository.delete(paciente)
     }
 
+    // Actualizar un paciente
     fun update(paciente: Pacientes) = viewModelScope.launch {
         repository.update(paciente)
     }
 
-    // Función para registrar un paciente con los nuevos campos
+    // Registrar un paciente con todos los campos necesarios
     fun registrarPaciente(
         nombre: String,
         edad: Int,
@@ -46,10 +55,5 @@ class PacienteViewModel(private val repository: PacienteRepository) : ViewModel(
             usuarioId = usuarioId
         )
         insert(nuevoPaciente)
-    }
-
-    // Función para obtener el paciente asociado al usuario
-    fun obtenerPacientePorUsuario(usuarioId: Long): LiveData<Pacientes?> {
-        return repository.obtenerPacientePorUsuario(usuarioId).asLiveData()
     }
 }

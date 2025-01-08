@@ -57,7 +57,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="Fecha de Registro"
-        android:inputType="date"
+        android:inputType="none"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
         android:padding="8dp" />
 
     <!-- Estatus del paciente -->

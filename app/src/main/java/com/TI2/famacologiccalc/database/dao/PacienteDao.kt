@@ -12,6 +12,10 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface PacienteDao {
 
+    // Obtener todos los pacientes registrados por un usuario específico
+    @Query("SELECT * FROM pacientes WHERE usuarioId = :usuarioId")
+    fun getPacientesByUsuarioId(usuarioId: Long): Flow<List<Pacientes>>
+
     // Obtener todos los pacientes
     @Query("SELECT * FROM pacientes")
     fun getAllPacientes(): Flow<List<Pacientes>>

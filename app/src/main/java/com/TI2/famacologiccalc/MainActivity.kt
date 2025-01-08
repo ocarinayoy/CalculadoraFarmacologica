@@ -26,12 +26,12 @@ import com.TI2.famacologiccalc.adapters.PacienteAdapter
 import com.TI2.famacologiccalc.databinding.ActivityMainBinding
 import com.TI2.famacologiccalc.sesion.ActualSession
 import com.TI2.famacologiccalc.database.DatabaseInstance
-import com.TI2.famacologiccalc.database.models.Pacientes
 import com.TI2.famacologiccalc.database.repositories.PacienteRepository
 import com.TI2.famacologiccalc.ui.ViewModelFactory
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import java.util.Calendar
 
 class MainActivity : AppCompatActivity() {
 
@@ -100,7 +100,7 @@ class MainActivity : AppCompatActivity() {
                 val pacienteViewModel = ViewModelProvider(this, ViewModelFactory(null,pacienteRepository)).get(PacienteViewModel::class.java)
 
                 // Consultamos el paciente asociado al usuario
-                pacienteViewModel.obtenerPacientePorUsuario(pacienteId).observe(this, Observer { paciente ->
+                pacienteViewModel.obtenerPacientesPorUsuario(pacienteId).observe(this, Observer { paciente ->
                     paciente?.let {
                         mostrarConsultaPaciente()
                     } ?: run {
@@ -201,12 +201,28 @@ class MainActivity : AppCompatActivity() {
         val etEdadPaciente = bottomSheetView.findViewById<EditText>(R.id.etEdadPaciente)
         val etPesoPaciente = bottomSheetView.findViewById<EditText>(R.id.etPesoPaciente)
         val etAlturaPaciente = bottomSheetView.findViewById<EditText>(R.id.etAlturaPaciente)
-        val etFechaRegistro = bottomSheetView.findViewById<EditText>(R.id.etFechaRegistro) // Nuevo campo para fecha
-        val spEstatusPaciente = bottomSheetView.findViewById<Spinner>(R.id.spEstatusPaciente) // Nuevo Spinner para estatus
+        val etFechaRegistro = bottomSheetView.findViewById<EditText>(R.id.etFechaRegistro) // Campo de fecha
+        val spEstatusPaciente = bottomSheetView.findViewById<Spinner>(R.id.spEstatusPaciente)
         val btnRegistrarPaciente = bottomSheetView.findViewById<Button>(R.id.btnRegistrarPaciente)
 
+        // Configuración del DatePickerDialog para seleccionar la fecha
+        etFechaRegistro.setOnClickListener {
+            val calendar = Calendar.getInstance()
+            val datePickerDialog = android.app.DatePickerDialog(
+                this,
+                { _, year, month, dayOfMonth ->
+                    val selectedDate = "$dayOfMonth/${month + 1}/$year"
+                    etFechaRegistro.setText(selectedDate) // Mostrar la fecha seleccionada en el EditText
+                },
+                calendar.get(Calendar.YEAR),
+                calendar.get(Calendar.MONTH),
+                calendar.get(Calendar.DAY_OF_MONTH)
+            )
+            datePickerDialog.show()
+        }
+
         // Definir las opciones para el spinner de estatus
-        val estatusOptions = listOf("Alta", "Baja", "En tratamiento") // Opciones de estatus
+        val estatusOptions = listOf("Alta", "Baja", "En tratamiento")
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, estatusOptions)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spEstatusPaciente.adapter = adapter
@@ -219,13 +235,32 @@ class MainActivity : AppCompatActivity() {
             val fechaRegistro = etFechaRegistro.text.toString()
             val estatus = spEstatusPaciente.selectedItem.toString()
 
-            if (nombre.isNotEmpty() && edad != null && peso != null && fechaRegistro.isNotEmpty()) {
+            // Validación de campos antes de registrar
+            if (nombre.isNotEmpty() && edad != null && peso != null && altura != null && fechaRegistro.isNotEmpty()) {
+                // Validar edad (0-150 años)
+                if (edad < 0 || edad > 150) {
+                    Toast.makeText(this, "Edad debe estar entre 0 y 150 años", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // Validar peso (1-500 kg)
+                if (peso < 1 || peso > 500) {
+                    Toast.makeText(this, "Peso debe estar entre 1 y 500 kg", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
+                // Validar altura (0.5-3 metros)
+                if (altura < 20 || altura > 350) {
+                    Toast.makeText(this, "Altura debe estar entre 20cm y 3.5 metros ", Toast.LENGTH_SHORT).show()
+                    return@setOnClickListener
+                }
+
                 val database = DatabaseInstance.getDatabase(this)
                 val pacienteRepository = PacienteRepository(database.pacienteDao())
                 val pacienteViewModel = PacienteViewModel(pacienteRepository)
                 val usuarioId = ActualSession.usuarioLogeado?.id ?: return@setOnClickListener
 
-                // Registrar paciente con los nuevos campos
+                // Registrar paciente
                 pacienteViewModel.registrarPaciente(nombre, edad, peso, altura, fechaRegistro, estatus, usuarioId)
                 Toast.makeText(this, "Paciente registrado exitosamente", Toast.LENGTH_SHORT).show()
                 bottomSheetDialog.dismiss()
@@ -234,8 +269,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
         bottomSheetDialog.show()
     }
+
 
     //Metodo para mostrar pacientes registrados por usuario
     // Metodo para mostrar pacientes registrados por usuario
@@ -247,22 +284,30 @@ class MainActivity : AppCompatActivity() {
         val rvPacienteList = bottomSheetView.findViewById<RecyclerView>(R.id.rv_patient_list)
         rvPacienteList.layoutManager = LinearLayoutManager(this)
 
-        // Obtener pacientes del ViewModel y observar los cambios
-        val pacienteRepository = PacienteRepository(DatabaseInstance.getDatabase(this).pacienteDao())
-        val pacienteViewModel = ViewModelProvider(this, ViewModelFactory(null, pacienteRepository)).get(PacienteViewModel::class.java)
+        val usuarioId = ActualSession.usuarioLogeado?.id
+        if (usuarioId == null) {
+            Toast.makeText(this, "Usuario no válido", Toast.LENGTH_SHORT).show()
+            return
+        }
 
-        // Observamos el Flow de pacientes
-        pacienteViewModel.obtenerPacientes().observe(this, Observer { pacientes ->
-            val adapter = PacienteAdapter(pacientes) { paciente ->
-                bottomSheetDialog.dismiss() // Cierra el BottomSheet después de seleccionar un paciente
+        val pacienteViewModel = ViewModelProvider(this, ViewModelFactory(null, PacienteRepository(DatabaseInstance.getDatabase(this).pacienteDao())))
+            .get(PacienteViewModel::class.java)
+
+        pacienteViewModel.obtenerPacientesPorUsuario(usuarioId).observe(this, Observer { pacientes ->
+            if (pacientes.isEmpty()) {
+                Toast.makeText(this, "No hay pacientes registrados para este usuario", Toast.LENGTH_SHORT).show()
+            } else {
+                val adapter = PacienteAdapter(pacientes) { paciente ->
+                    Toast.makeText(this, "Paciente seleccionado: ${paciente.nombre}", Toast.LENGTH_SHORT).show()
+                    bottomSheetDialog.dismiss()
+                }
+                rvPacienteList.adapter = adapter
             }
-
-            // Actualizamos el adapter con la lista de pacientes
-            rvPacienteList.adapter = adapter
         })
 
         bottomSheetDialog.show()
     }
+
 
 
 

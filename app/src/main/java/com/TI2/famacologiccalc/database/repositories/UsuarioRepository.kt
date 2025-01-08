@@ -1,7 +1,9 @@
 package com.TI2.famacologiccalc.database.repositories
 
 import androidx.annotation.WorkerThread
+import com.TI2.famacologiccalc.database.dao.PacienteDao
 import com.TI2.famacologiccalc.database.dao.UsuarioDao
+import com.TI2.famacologiccalc.database.models.Pacientes
 import com.TI2.famacologiccalc.database.models.Usuarios
 import kotlinx.coroutines.flow.Flow
 
@@ -38,6 +40,7 @@ class UsuarioRepository(private val usuarioDao: UsuarioDao) {
     suspend fun getUsuarioById(id: Long): Usuarios? {
         return usuarioDao.getUsuarioById(id)
     }
+
 
     // Nueva función: Actualizar nombre, email y especialidad del usuario
     @WorkerThread
