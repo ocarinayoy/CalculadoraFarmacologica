@@ -37,6 +37,17 @@ class WeightedDosageFragment : Fragment() {
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // Limpia los campos al iniciar el fragmento
+        binding.etWeight.setText("")
+        binding.etDosage.setText("")
+        binding.etFrequency.setText("")
+        binding.tvResult.text = "Resultado: "
+    }
+
+
     private fun setupToggleEditMode() {
         binding.tvEditToggle.setOnClickListener {
             isEditMode = !isEditMode
