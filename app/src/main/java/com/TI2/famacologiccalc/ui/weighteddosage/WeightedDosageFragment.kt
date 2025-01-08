@@ -40,12 +40,17 @@ class WeightedDosageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // Limpia los campos al iniciar el fragmento
+        // Forzar el estado inicial con campos en modo no edición
+        isEditMode = false
+        toggleFields(isEditMode) // Asegura que los TextView sean visibles y los EditText estén ocultos
+
+        // Limpiar los valores de los campos
         binding.etWeight.setText("")
         binding.etDosage.setText("")
         binding.etFrequency.setText("")
         binding.tvResult.text = "Resultado: "
     }
+
 
 
     private fun setupToggleEditMode() {
@@ -102,6 +107,24 @@ class WeightedDosageFragment : Fragment() {
             }
         }
     }
+
+    override fun onResume() {
+        super.onResume()
+
+        // Restablecer el estado de edición y limpiar los campos si es necesario
+        if (!isEditMode) {
+            toggleFields(isEditMode) // Alterna a modo de visualización
+        }
+
+        // Limpiar los campos al regresar
+        binding.etWeight.setText("")
+        binding.etDosage.setText("")
+        binding.etFrequency.setText("")
+        binding.tvResult.text = "Resultado: "
+    }
+
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()
