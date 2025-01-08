@@ -19,7 +19,9 @@ data class Pacientes(
     @PrimaryKey(autoGenerate = true) val id: Long = 0,
     val nombre: String,
     val edad: Int,
-    val peso: Double,
-    val altura: Double? = null,
+    val peso: Double? = null, // Peso opcional
+    val altura: Double? = null, // Altura opcional
+    val fechaRegistro: String, // Fecha de registro
+    val estatus: String, // Estatus del paciente (alta, baja, etc.)
     val usuarioId: Long // Clave foránea para el usuario
 )

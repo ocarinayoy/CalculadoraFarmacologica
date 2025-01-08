@@ -23,5 +23,6 @@
 
 
     <string name="news_image_desc">Imagen de la noticia</string>
+    <string name="patient_image_desc">Imagen del paciente</string>
 
 </resources>

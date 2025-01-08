@@ -16,19 +16,23 @@ interface PacienteDao {
     @Query("SELECT * FROM pacientes")
     fun getAllPacientes(): Flow<List<Pacientes>>
 
-    // Insertar un nuevo pacientes
+    // Insertar un nuevo paciente
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     suspend fun insertPacientes(pacientes: Pacientes)
 
-    // Actualizar un pacientes existente
+    // Actualizar un paciente existente
     @Update
     suspend fun updatePacientes(pacientes: Pacientes)
 
-    // Eliminar un pacientes
+    // Eliminar un paciente
     @Delete
     suspend fun deletePacientes(pacientes: Pacientes)
 
-    // Buscar pacientes por ID
+    // Buscar paciente por ID
     @Query("SELECT * FROM pacientes WHERE id = :id LIMIT 1")
-    suspend fun getPacienteById(id: Int): Pacientes?
+    suspend fun getPacienteById(id: Long): Pacientes?
+
+    // Buscar paciente por usuarioId
+    @Query("SELECT * FROM pacientes WHERE usuarioId = :usuarioId LIMIT 1")
+    fun getPacienteByUsuarioId(usuarioId: Long): Flow<Pacientes?>
 }

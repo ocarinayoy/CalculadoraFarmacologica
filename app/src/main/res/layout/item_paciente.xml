@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="8dp"
+    android:background="?attr/selectableItemBackground">
+
+    <!-- Imagen del paciente (opcional) -->
+    <ImageView
+        android:id="@+id/iv_patient_image"
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginEnd="8dp"
+        android:scaleType="centerCrop"
+        android:contentDescription="@string/patient_image_desc"
+        android:src="@drawable/ic_patient_placeholder" />
+
+    <!-- Contenedor de texto -->
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <!-- Nombre del paciente -->
+        <TextView
+            android:id="@+id/tv_patient_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Nombre del paciente"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end" />
+
+        <!-- Edad del paciente -->
+        <TextView
+            android:id="@+id/tv_patient_age"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Edad: 30 años"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Peso del paciente -->
+        <TextView
+            android:id="@+id/tv_patient_weight"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Peso: 70 kg"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Altura del paciente -->
+        <TextView
+            android:id="@+id/tv_patient_height"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Altura: 175 cm"
+            android:textSize="14sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Fecha de registro del paciente -->
+        <TextView
+            android:id="@+id/tv_patient_registration_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Registrado el: 01/01/2025"
+            android:textSize="12sp"
+            android:layout_marginTop="4dp" />
+
+        <!-- Estatus del paciente -->
+        <TextView
+            android:id="@+id/tv_patient_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Estatus: Alta"
+            android:textSize="14sp"
+            android:textStyle="italic"
+            android:layout_marginTop="4dp" />
+    </LinearLayout>
+</LinearLayout>

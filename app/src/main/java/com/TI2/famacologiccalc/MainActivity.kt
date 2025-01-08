@@ -3,24 +3,32 @@ package com.TI2.famacologiccalc
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
-import androidx.activity.OnBackPressedCallback
 import androidx.activity.addCallback
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.TI2.famacologiccalc.adapters.PacienteAdapter
 import com.TI2.famacologiccalc.databinding.ActivityMainBinding
 import com.TI2.famacologiccalc.sesion.ActualSession
 import com.TI2.famacologiccalc.database.DatabaseInstance
+import com.TI2.famacologiccalc.database.models.Pacientes
 import com.TI2.famacologiccalc.database.repositories.PacienteRepository
+import com.TI2.famacologiccalc.ui.ViewModelFactory
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -85,8 +93,24 @@ class MainActivity : AppCompatActivity() {
         }
 
         binding.appBarMain.fabConsultPatient.setOnClickListener {
-            Toast.makeText(this, "Consultar paciente actual", Toast.LENGTH_SHORT).show()
+            val pacienteId = ActualSession.usuarioLogeado?.id // Asumimos que el usuario tiene un ID
+            if (pacienteId != null) {
+                val database = DatabaseInstance.getDatabase(this)
+                val pacienteRepository = PacienteRepository(database.pacienteDao())
+                val pacienteViewModel = ViewModelProvider(this, ViewModelFactory(null,pacienteRepository)).get(PacienteViewModel::class.java)
+
+                // Consultamos el paciente asociado al usuario
+                pacienteViewModel.obtenerPacientePorUsuario(pacienteId).observe(this, Observer { paciente ->
+                    paciente?.let {
+                        mostrarConsultaPaciente()
+                    } ?: run {
+                        Toast.makeText(this, "No se encontró un paciente asociado", Toast.LENGTH_SHORT).show()
+                    }
+                })
+            }
         }
+
+
 
         // Agregar un callback para manejar el botón de retroceso
         onBackPressedDispatcher.addCallback(this) {
@@ -177,21 +201,32 @@ class MainActivity : AppCompatActivity() {
         val etEdadPaciente = bottomSheetView.findViewById<EditText>(R.id.etEdadPaciente)
         val etPesoPaciente = bottomSheetView.findViewById<EditText>(R.id.etPesoPaciente)
         val etAlturaPaciente = bottomSheetView.findViewById<EditText>(R.id.etAlturaPaciente)
+        val etFechaRegistro = bottomSheetView.findViewById<EditText>(R.id.etFechaRegistro) // Nuevo campo para fecha
+        val spEstatusPaciente = bottomSheetView.findViewById<Spinner>(R.id.spEstatusPaciente) // Nuevo Spinner para estatus
         val btnRegistrarPaciente = bottomSheetView.findViewById<Button>(R.id.btnRegistrarPaciente)
+
+        // Definir las opciones para el spinner de estatus
+        val estatusOptions = listOf("Alta", "Baja", "En tratamiento") // Opciones de estatus
+        val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, estatusOptions)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spEstatusPaciente.adapter = adapter
 
         btnRegistrarPaciente.setOnClickListener {
             val nombre = etNombrePaciente.text.toString()
             val edad = etEdadPaciente.text.toString().toIntOrNull()
             val peso = etPesoPaciente.text.toString().toDoubleOrNull()
             val altura = etAlturaPaciente.text.toString().toDoubleOrNull()
+            val fechaRegistro = etFechaRegistro.text.toString()
+            val estatus = spEstatusPaciente.selectedItem.toString()
 
-            if (nombre.isNotEmpty() && edad != null && peso != null) {
+            if (nombre.isNotEmpty() && edad != null && peso != null && fechaRegistro.isNotEmpty()) {
                 val database = DatabaseInstance.getDatabase(this)
                 val pacienteRepository = PacienteRepository(database.pacienteDao())
                 val pacienteViewModel = PacienteViewModel(pacienteRepository)
                 val usuarioId = ActualSession.usuarioLogeado?.id ?: return@setOnClickListener
 
-                pacienteViewModel.registrarPaciente(nombre, edad, peso, altura, usuarioId)
+                // Registrar paciente con los nuevos campos
+                pacienteViewModel.registrarPaciente(nombre, edad, peso, altura, fechaRegistro, estatus, usuarioId)
                 Toast.makeText(this, "Paciente registrado exitosamente", Toast.LENGTH_SHORT).show()
                 bottomSheetDialog.dismiss()
             } else {
@@ -201,6 +236,36 @@ class MainActivity : AppCompatActivity() {
 
         bottomSheetDialog.show()
     }
+
+    //Metodo para mostrar pacientes registrados por usuario
+    // Metodo para mostrar pacientes registrados por usuario
+    private fun mostrarConsultaPaciente() {
+        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_consulta_paciente, null)
+        val bottomSheetDialog = BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(bottomSheetView)
+
+        val rvPacienteList = bottomSheetView.findViewById<RecyclerView>(R.id.rv_patient_list)
+        rvPacienteList.layoutManager = LinearLayoutManager(this)
+
+        // Obtener pacientes del ViewModel y observar los cambios
+        val pacienteRepository = PacienteRepository(DatabaseInstance.getDatabase(this).pacienteDao())
+        val pacienteViewModel = ViewModelProvider(this, ViewModelFactory(null, pacienteRepository)).get(PacienteViewModel::class.java)
+
+        // Observamos el Flow de pacientes
+        pacienteViewModel.obtenerPacientes().observe(this, Observer { pacientes ->
+            val adapter = PacienteAdapter(pacientes) { paciente ->
+                bottomSheetDialog.dismiss() // Cierra el BottomSheet después de seleccionar un paciente
+            }
+
+            // Actualizamos el adapter con la lista de pacientes
+            rvPacienteList.adapter = adapter
+        })
+
+        bottomSheetDialog.show()
+    }
+
+
+
 
     // Metodo que maneja el retroceso
 // Método que maneja el retroceso

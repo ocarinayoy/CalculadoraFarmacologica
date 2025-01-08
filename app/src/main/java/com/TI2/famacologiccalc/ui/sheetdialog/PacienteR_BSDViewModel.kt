@@ -10,12 +10,14 @@ class PacienteR_BSDViewModel(private val pacienteViewModel: PacienteViewModel) :
 
     // Suponiendo que `usuarioId` se obtiene desde la sesión actual
     // Este método puede recibir el `usuarioId` como parámetro
-    fun registrarPaciente(usuarioId: Long, nombre: String, edad: Int, peso: Double, altura: Double?) {
+    fun registrarPaciente(usuarioId: Long, nombre: String, edad: Int, peso: Double, altura: Double?, fechaRegistro: String, estatus: String) {
         val paciente = Pacientes(
             nombre = nombre,
             edad = edad,
             peso = peso,
             altura = altura,
+            fechaRegistro = fechaRegistro,
+            estatus = estatus,
             usuarioId = usuarioId // Asociar el paciente al usuario logueado
         )
 

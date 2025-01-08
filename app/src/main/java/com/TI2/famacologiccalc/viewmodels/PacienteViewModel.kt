@@ -9,6 +9,11 @@ class PacienteViewModel(private val repository: PacienteRepository) : ViewModel(
 
     val allPacientes: LiveData<List<Pacientes>> = repository.allPacientes.asLiveData()
 
+    // Función que expone los pacientes como LiveData
+    fun obtenerPacientes(): LiveData<List<Pacientes>> {
+        return allPacientes
+    }
+
     fun insert(paciente: Pacientes) = viewModelScope.launch {
         repository.insert(paciente)
     }
@@ -21,12 +26,14 @@ class PacienteViewModel(private val repository: PacienteRepository) : ViewModel(
         repository.update(paciente)
     }
 
-    // Nueva función para registrar un paciente
+    // Función para registrar un paciente con los nuevos campos
     fun registrarPaciente(
         nombre: String,
         edad: Int,
-        peso: Double,
+        peso: Double?,
         altura: Double?,
+        fechaRegistro: String,
+        estatus: String,
         usuarioId: Long
     ) {
         val nuevoPaciente = Pacientes(
@@ -34,10 +41,15 @@ class PacienteViewModel(private val repository: PacienteRepository) : ViewModel(
             edad = edad,
             peso = peso,
             altura = altura,
+            fechaRegistro = fechaRegistro,
+            estatus = estatus,
             usuarioId = usuarioId
         )
-
-        // Insertar el nuevo paciente en la base de datos
         insert(nuevoPaciente)
+    }
+
+    // Función para obtener el paciente asociado al usuario
+    fun obtenerPacientePorUsuario(usuarioId: Long): LiveData<Pacientes?> {
+        return repository.obtenerPacientePorUsuario(usuarioId).asLiveData()
     }
 }

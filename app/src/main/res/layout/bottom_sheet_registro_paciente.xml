@@ -51,6 +51,22 @@
         android:inputType="numberDecimal"
         android:padding="8dp" />
 
+    <!-- Fecha de registro -->
+    <EditText
+        android:id="@+id/etFechaRegistro"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="Fecha de Registro"
+        android:inputType="date"
+        android:padding="8dp" />
+
+    <!-- Estatus del paciente -->
+    <Spinner
+        android:id="@+id/spEstatusPaciente"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp" />
+
     <!-- Botón para registrar al paciente -->
     <Button
         android:id="@+id/btnRegistrarPaciente"

@@ -4,21 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.lifecycle.ViewModelProvider
+import com.TI2.famacologiccalc.R
 import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.models.Pacientes
 import com.TI2.famacologiccalc.database.repositories.PacienteRepository
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
-import com.TI2.famacologiccalc.databinding.BottomSheetPacienteBinding
+import com.TI2.famacologiccalc.databinding.BottomSheetRegistroPacienteBinding
 import com.TI2.famacologiccalc.sesion.ActualSession
 import com.TI2.famacologiccalc.ui.ViewModelFactory
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import java.text.SimpleDateFormat
+import java.util.*
 
 class PacienteR_BSDFragment : BottomSheetDialogFragment() {
 
-    private var _binding: BottomSheetPacienteBinding? = null
+    private var _binding: BottomSheetRegistroPacienteBinding? = null
     private val binding get() = _binding!!
     private lateinit var pacienteViewModel: PacienteViewModel
 
@@ -26,7 +30,7 @@ class PacienteR_BSDFragment : BottomSheetDialogFragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding = BottomSheetPacienteBinding.inflate(inflater, container, false)
+        _binding = BottomSheetRegistroPacienteBinding.inflate(inflater, container, false)
         val root: View = binding.root
 
         // Inicializar la base de datos y el repositorio
@@ -34,10 +38,18 @@ class PacienteR_BSDFragment : BottomSheetDialogFragment() {
         val pacienteRepository = PacienteRepository(database.pacienteDao())
         val usuarioRepository = UsuarioRepository(DatabaseInstance.getDatabase(requireContext()).usuarioDao())
 
-// Crear el ViewModel con la fábrica, pasando ambos repositorios
+        // Crear el ViewModel con la fábrica, pasando ambos repositorios
         val factory = ViewModelFactory(usuarioRepository, pacienteRepository)
         pacienteViewModel = ViewModelProvider(this, factory).get(PacienteViewModel::class.java)
 
+        // Configurar el Spinner de estatus
+        val estatusAdapter = ArrayAdapter.createFromResource(
+            requireContext(),
+            R.array.estatus_options, // Asegúrate de definir esta lista en strings.xml
+            android.R.layout.simple_spinner_item
+        )
+        estatusAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.spEstatusPaciente.adapter = estatusAdapter
 
         // Configuración del botón de registrar paciente
         binding.btnRegistrarPaciente.setOnClickListener {
@@ -45,8 +57,10 @@ class PacienteR_BSDFragment : BottomSheetDialogFragment() {
             val edad = binding.etEdadPaciente.text.toString().toIntOrNull()
             val peso = binding.etPesoPaciente.text.toString().toDoubleOrNull()
             val altura = binding.etAlturaPaciente.text.toString().toDoubleOrNull()
+            val fechaRegistro = binding.etFechaRegistro.text.toString()
+            val estatus = binding.spEstatusPaciente.selectedItem.toString()
 
-            if (nombre.isNotEmpty() && edad != null && peso != null) {
+            if (nombre.isNotEmpty() && edad != null && peso != null && fechaRegistro.isNotEmpty()) {
                 // Verificar que el usuario esté logueado y obtener su ID
                 val usuarioId = ActualSession.usuarioLogeado?.id
                 if (usuarioId != null) {
@@ -56,6 +70,8 @@ class PacienteR_BSDFragment : BottomSheetDialogFragment() {
                         edad = edad,
                         peso = peso,
                         altura = altura,
+                        fechaRegistro = fechaRegistro,
+                        estatus = estatus,
                         usuarioId = usuarioId // Asociamos al paciente con el usuario logueado
                     )
 
