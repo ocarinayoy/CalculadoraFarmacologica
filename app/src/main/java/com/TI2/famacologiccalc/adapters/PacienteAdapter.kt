@@ -1,5 +1,6 @@
 package com.TI2.famacologiccalc.adapters
 
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.TI2.famacologiccalc.R
 import com.TI2.famacologiccalc.database.models.Pacientes
+import com.TI2.famacologiccalc.database.session.ActualPatient
 
 class PacienteAdapter(
     private val pacientes: List<Pacientes>, // Cambiar Flow por List
@@ -29,11 +31,18 @@ class PacienteAdapter(
         holder.fechaRegistro.text = "Registrado el: ${paciente.fechaRegistro}"
         holder.estatusPaciente.text = "Estatus: ${paciente.estatus}"
 
-        // Si tienes una imagen del paciente, la puedes asignar aquí
-        // holder.imageView.setImageResource(R.drawable.ic_patient_placeholder) // Ejemplo
+        // Cambiar el fondo si es el paciente seleccionado
+        if (ActualPatient.pacienteSeleccionado == paciente) {
+            holder.itemView.setBackgroundColor(Color.parseColor("#D3D3D3")) // Fondo para item seleccionado
+        } else {
+            holder.itemView.setBackgroundColor(Color.TRANSPARENT) // Fondo por defecto
+        }
 
+        // Asignar click al item
         holder.itemView.setOnClickListener {
             onItemClick(paciente)
+            ActualPatient.pacienteSeleccionado = paciente // Actualiza el paciente seleccionado
+            notifyDataSetChanged() // Refresca la vista para aplicar cambios
         }
     }
 
