@@ -40,10 +40,15 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true // Permite ignorar errores de tipos desconocidos en anotaciones
+}
+
 dependencies {
     implementation(libs.navigation.ui.ktx)
     implementation(libs.androidx.navigation.fragment)
     implementation(libs.androidx.material3.android)
+
     // Room
     val roomVersion = "2.6.0" // Ajusta a la versión más reciente
     implementation("androidx.room:room-runtime:$roomVersion")
@@ -61,9 +66,4 @@ dependencies {
     // Otras dependencias necesarias
     implementation("androidx.core:core-ktx:1.12.0")
     implementation("com.google.android.material:material:1.11.0")
-
-
 }
-
-
-
