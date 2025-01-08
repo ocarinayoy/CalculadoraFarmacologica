@@ -49,7 +49,7 @@ class WeightedDosageFragment : Fragment() {
 
 
     private fun setupToggleEditMode() {
-        binding.tvEditToggle.setOnClickListener {
+        binding.tvEditToggleData.setOnClickListener {
             isEditMode = !isEditMode
             toggleFields(isEditMode)
         }
@@ -60,7 +60,7 @@ class WeightedDosageFragment : Fragment() {
         toggleField(binding.tvDosage, binding.etDosage, editMode)
         toggleField(binding.tvFrequency, binding.etFrequency, editMode)
 
-        binding.tvEditToggle.text = if (editMode) "Guardar" else "Editar"
+        binding.tvEditToggleData.text = if (editMode) "Guardar" else "Editar"
     }
 
     private fun toggleField(tv: TextView, et: EditText, editMode: Boolean) {
