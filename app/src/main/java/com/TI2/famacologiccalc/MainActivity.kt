@@ -27,6 +27,7 @@ import com.TI2.famacologiccalc.databinding.ActivityMainBinding
 import com.TI2.famacologiccalc.sesion.ActualSession
 import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.repositories.PacienteRepository
+import com.TI2.famacologiccalc.database.session.ActualPatient
 import com.TI2.famacologiccalc.ui.ViewModelFactory
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -275,7 +276,6 @@ class MainActivity : AppCompatActivity() {
 
 
     //Metodo para mostrar pacientes registrados por usuario
-    // Metodo para mostrar pacientes registrados por usuario
     private fun mostrarConsultaPaciente() {
         val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_consulta_paciente, null)
         val bottomSheetDialog = BottomSheetDialog(this)
@@ -284,14 +284,18 @@ class MainActivity : AppCompatActivity() {
         val rvPacienteList = bottomSheetView.findViewById<RecyclerView>(R.id.rv_patient_list)
         rvPacienteList.layoutManager = LinearLayoutManager(this)
 
+        val btnCerrar = bottomSheetView.findViewById<Button>(R.id.btnCloseBottomSheet) // Botón de cerrar en el diseño
         val usuarioId = ActualSession.usuarioLogeado?.id
+
         if (usuarioId == null) {
             Toast.makeText(this, "Usuario no válido", Toast.LENGTH_SHORT).show()
             return
         }
 
-        val pacienteViewModel = ViewModelProvider(this, ViewModelFactory(null, PacienteRepository(DatabaseInstance.getDatabase(this).pacienteDao())))
-            .get(PacienteViewModel::class.java)
+        val pacienteViewModel = ViewModelProvider(
+            this,
+            ViewModelFactory(null, PacienteRepository(DatabaseInstance.getDatabase(this).pacienteDao()))
+        ).get(PacienteViewModel::class.java)
 
         pacienteViewModel.obtenerPacientesPorUsuario(usuarioId).observe(this, Observer { pacientes ->
             if (pacientes.isEmpty()) {
@@ -299,14 +303,21 @@ class MainActivity : AppCompatActivity() {
             } else {
                 val adapter = PacienteAdapter(pacientes) { paciente ->
                     Toast.makeText(this, "Paciente seleccionado: ${paciente.nombre}", Toast.LENGTH_SHORT).show()
-                    bottomSheetDialog.dismiss()
+                    ActualPatient.pacienteSeleccionado = paciente // Actualiza el paciente seleccionado
+                    // No cerrar el BottomSheet aquí
                 }
                 rvPacienteList.adapter = adapter
             }
         })
 
+        // Configuración del botón "Cerrar"
+        btnCerrar.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
+
         bottomSheetDialog.show()
     }
+
 
 
 
