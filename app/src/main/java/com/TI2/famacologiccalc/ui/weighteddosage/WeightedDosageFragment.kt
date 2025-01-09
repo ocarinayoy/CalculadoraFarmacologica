@@ -7,8 +7,14 @@ import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.EditText
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import com.TI2.famacologiccalc.database.AppDatabase
+import com.TI2.famacologiccalc.database.repositories.PacienteRepository
+import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
+import com.TI2.famacologiccalc.database.session.ActualPatient
 import com.TI2.famacologiccalc.databinding.FragmentWeighteddosageBinding
+import com.TI2.famacologiccalc.ui.ViewModelFactory
+import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 
 class WeightedDosageFragment : Fragment() {
 
@@ -18,13 +24,27 @@ class WeightedDosageFragment : Fragment() {
     private var isEditMode = false
 
     // ViewModel compartido
-    private val viewModel: WeightedDosageViewModel by activityViewModels()
+    private lateinit var viewModel: WeightedDosageViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentWeighteddosageBinding.inflate(inflater, container, false)
+
+        // Inicializa los DAOs de la base de datos
+        val usuarioDao = AppDatabase.getDatabase(requireContext()).usuarioDao()
+        val pacienteDao = AppDatabase.getDatabase(requireContext()).pacienteDao()
+
+        // Inicializa los repositorios
+        val usuarioRepository = UsuarioRepository(usuarioDao)
+        val pacienteRepository = PacienteRepository(pacienteDao)
+
+        // Crear el ViewModelFactory con los repositorios
+        val viewModelFactory = ViewModelFactory(usuarioRepository, pacienteRepository)
+
+        // Crear el ViewModel usando el ViewModelFactory
+        viewModel = ViewModelProvider(this, viewModelFactory).get(WeightedDosageViewModel::class.java)
 
         // Observar cambios en el resultado
         viewModel.result.observe(viewLifecycleOwner, { result ->
@@ -42,16 +62,25 @@ class WeightedDosageFragment : Fragment() {
 
         // Forzar el estado inicial con campos en modo no edición
         isEditMode = false
-        toggleFields(isEditMode) // Asegura que los TextView sean visibles y los EditText estén ocultos
+        toggleFields(isEditMode)
 
         // Limpiar los valores de los campos
         binding.etWeight.setText("")
         binding.etDosage.setText("")
         binding.etFrequency.setText("")
         binding.tvResult.text = "Resultado: "
+
+        // Cargar los datos del paciente seleccionado
+        loadPatientData()
     }
 
-
+    private fun loadPatientData() {
+        ActualPatient.pacienteSeleccionado?.let { paciente ->
+            // Cargar los datos en los EditText
+            binding.etWeight.setText(paciente.peso?.toString() ?: "")
+            // Aquí puedes cargar otros datos si es necesario
+        }
+    }
 
     private fun setupToggleEditMode() {
         binding.tvEditToggleData.setOnClickListener {
@@ -122,9 +151,6 @@ class WeightedDosageFragment : Fragment() {
         binding.etFrequency.setText("")
         binding.tvResult.text = "Resultado: "
     }
-
-
-
 
     override fun onDestroyView() {
         super.onDestroyView()

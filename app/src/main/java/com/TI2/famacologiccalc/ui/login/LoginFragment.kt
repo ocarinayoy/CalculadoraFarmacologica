@@ -13,7 +13,7 @@ import com.TI2.famacologiccalc.R
 import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.databinding.FragmentLoginBinding
-import com.TI2.famacologiccalc.sesion.ActualSession
+import com.TI2.famacologiccalc.database.session.ActualSession
 import com.TI2.famacologiccalc.ui.ViewModelFactory
 
 

@@ -5,9 +5,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.TI2.famacologiccalc.database.models.Usuarios
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
-import com.TI2.famacologiccalc.sesion.ActualSession
+import com.TI2.famacologiccalc.database.session.ActualSession
 import kotlinx.coroutines.launch
 
 class SettingsViewModel(private val usuarioRepository: UsuarioRepository) : ViewModel() {

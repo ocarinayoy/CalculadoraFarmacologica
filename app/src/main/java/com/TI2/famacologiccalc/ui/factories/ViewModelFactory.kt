@@ -7,8 +7,8 @@ import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.ui.settings.SettingsViewModel
 import com.TI2.famacologiccalc.ui.login.LoginViewModel
 import com.TI2.famacologiccalc.ui.register.RegisterViewModel
-import com.TI2.famacologiccalc.ui.sheetdialog.PacienteR_BSDViewModel
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
+import com.TI2.famacologiccalc.ui.weighteddosage.WeightedDosageViewModel
 
 class ViewModelFactory(
     private val usuarioRepository: UsuarioRepository?,
@@ -30,8 +30,10 @@ class ViewModelFactory(
             modelClass.isAssignableFrom(SettingsViewModel::class.java) && usuarioRepository != null -> {
                 SettingsViewModel(usuarioRepository) as T
             }
+            modelClass.isAssignableFrom(WeightedDosageViewModel::class.java) && usuarioRepository != null && pacienteRepository != null -> {
+                WeightedDosageViewModel(usuarioRepository, pacienteRepository) as T
+            }
             else -> throw IllegalArgumentException("Unknown ViewModel class or missing repository")
         }
     }
 }
-

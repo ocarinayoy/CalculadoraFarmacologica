@@ -3,8 +3,13 @@ package com.TI2.famacologiccalc.ui.weighteddosage
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.TI2.famacologiccalc.database.repositories.PacienteRepository
+import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 
-class WeightedDosageViewModel : ViewModel() {
+class WeightedDosageViewModel(
+    private val usuarioRepository: UsuarioRepository,
+    private val pacienteRepository: PacienteRepository
+) : ViewModel() {
 
     // Variables para peso, dosificación (en mg por kg) y frecuencia
     val weight = MutableLiveData<String>()

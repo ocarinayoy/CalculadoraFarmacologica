@@ -13,7 +13,7 @@ import com.TI2.famacologiccalc.database.models.Pacientes
 import com.TI2.famacologiccalc.database.repositories.PacienteRepository
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.databinding.BottomSheetRegistroPacienteBinding
-import com.TI2.famacologiccalc.sesion.ActualSession
+import com.TI2.famacologiccalc.database.session.ActualSession
 import com.TI2.famacologiccalc.ui.ViewModelFactory
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

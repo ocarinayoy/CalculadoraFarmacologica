@@ -22,9 +22,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.TI2.famacologiccalc.adapters.PacienteAdapter
 import com.TI2.famacologiccalc.databinding.ActivityMainBinding
-import com.TI2.famacologiccalc.sesion.ActualSession
 import com.TI2.famacologiccalc.database.DatabaseInstance
 import com.TI2.famacologiccalc.database.repositories.PacienteRepository
+import com.TI2.famacologiccalc.database.session.ActualSession
 import com.TI2.famacologiccalc.database.session.ActualPatient
 import com.TI2.famacologiccalc.ui.ViewModelFactory
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
