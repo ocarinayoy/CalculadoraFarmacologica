@@ -6,6 +6,7 @@ import android.view.MenuItem
 import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Spinner
 import android.widget.TextView
 import android.widget.Toast
@@ -27,6 +28,7 @@ import com.TI2.famacologiccalc.database.repositories.PacienteRepository
 import com.TI2.famacologiccalc.database.session.ActualSession
 import com.TI2.famacologiccalc.database.session.ActualPatient
 import com.TI2.famacologiccalc.ui.ViewModelFactory
+import com.TI2.famacologiccalc.ui.sheetdialog.consulta.PacienteConsultaFragment
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -96,12 +98,15 @@ class MainActivity : AppCompatActivity() {
             if (pacienteId != null) {
                 val database = DatabaseInstance.getDatabase(this)
                 val pacienteRepository = PacienteRepository(database.pacienteDao())
-                val pacienteViewModel = ViewModelProvider(this, ViewModelFactory(null,pacienteRepository)).get(PacienteViewModel::class.java)
+                val pacienteViewModel =
+                    ViewModelProvider(this, ViewModelFactory(null, pacienteRepository)).get(
+                        PacienteViewModel::class.java
+                    )
 
                 // Consultamos el paciente asociado al usuario
                 pacienteViewModel.obtenerPacientesPorUsuario(pacienteId).observe(this) { paciente ->
                     paciente?.let {
-                        mostrarConsultaPaciente()
+                        openPacienteConsultaFragment()
                     } ?: run {
                         Toast.makeText(
                             this,
@@ -113,6 +118,13 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+
+    }
+
+    private fun openPacienteConsultaFragment() {
+        // Creamos el BottomSheetDialog con el fragmento PacienteConsultaFragment
+        val bottomSheetDialogFragment = PacienteConsultaFragment()
+        bottomSheetDialogFragment.show(supportFragmentManager, bottomSheetDialogFragment.tag)
     }
 
     // Método para alternar el menú del FAB
@@ -120,7 +132,8 @@ class MainActivity : AppCompatActivity() {
         isFabExpanded = !isFabExpanded
 
         // Animación del FAB principal (giro)
-        val rotationAngle = if (isFabExpanded) 90f else 0f // Rota 135 grados si está expandido, 0 si no
+        val rotationAngle =
+            if (isFabExpanded) 90f else 0f // Rota 135 grados si está expandido, 0 si no
         binding.appBarMain.fab.animate()
             .rotation(rotationAngle)  // Rota el FAB principal
             .setDuration(300)
@@ -159,6 +172,7 @@ class MainActivity : AppCompatActivity() {
                 navigateToSettingsFragment()
                 true
             }
+
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -198,7 +212,8 @@ class MainActivity : AppCompatActivity() {
         val etEdadPaciente = bottomSheetView.findViewById<EditText>(R.id.etEdadPaciente)
         val etPesoPaciente = bottomSheetView.findViewById<EditText>(R.id.etPesoPaciente)
         val etAlturaPaciente = bottomSheetView.findViewById<EditText>(R.id.etAlturaPaciente)
-        val etFechaRegistro = bottomSheetView.findViewById<EditText>(R.id.etFechaRegistro) // Campo de fecha
+        val etFechaRegistro =
+            bottomSheetView.findViewById<EditText>(R.id.etFechaRegistro) // Campo de fecha
         val spEstatusPaciente = bottomSheetView.findViewById<Spinner>(R.id.spEstatusPaciente)
         val btnRegistrarPaciente = bottomSheetView.findViewById<Button>(R.id.btnRegistrarPaciente)
 
@@ -236,19 +251,25 @@ class MainActivity : AppCompatActivity() {
             if (nombre.isNotEmpty() && edad != null && peso != null && altura != null && fechaRegistro.isNotEmpty()) {
                 // Validar edad (0-150 años)
                 if (edad < 0 || edad > 150) {
-                    Toast.makeText(this, "Edad debe estar entre 0 y 150 años", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Edad debe estar entre 0 y 150 años", Toast.LENGTH_SHORT)
+                        .show()
                     return@setOnClickListener
                 }
 
                 // Validar peso (1-500 kg)
                 if (peso < 1 || peso > 500) {
-                    Toast.makeText(this, "Peso debe estar entre 1 y 500 kg", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this, "Peso debe estar entre 1 y 500 kg", Toast.LENGTH_SHORT)
+                        .show()
                     return@setOnClickListener
                 }
 
                 // Validar altura (0.5-3 metros)
                 if (altura < 20 || altura > 350) {
-                    Toast.makeText(this, "Altura debe estar entre 20cm y 3.5 metros ", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        this,
+                        "Altura debe estar entre 20cm y 3.5 metros ",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     return@setOnClickListener
                 }
 
@@ -258,61 +279,25 @@ class MainActivity : AppCompatActivity() {
                 val usuarioId = ActualSession.usuarioLogeado?.id ?: return@setOnClickListener
 
                 // Registrar paciente
-                pacienteViewModel.registrarPaciente(nombre, edad, peso, altura, fechaRegistro, estatus, usuarioId)
-                Toast.makeText(this, "Paciente registrado exitosamente", Toast.LENGTH_SHORT).show()
+                pacienteViewModel.registrarPaciente(
+                    nombre,
+                    edad,
+                    peso,
+                    altura,
+                    fechaRegistro,
+                    estatus,
+                    usuarioId
+                )
                 bottomSheetDialog.dismiss()
+                Toast.makeText(this, "Paciente registrado correctamente", Toast.LENGTH_SHORT).show()
             } else {
-                Toast.makeText(this, "Por favor, completa todos los campos correctamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Por favor, complete todos los campos", Toast.LENGTH_SHORT)
+                    .show()
             }
         }
-
 
         bottomSheetDialog.show()
     }
 
-
-    //Metodo para mostrar pacientes registrados por usuario
-    private fun mostrarConsultaPaciente() {
-        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_consulta_paciente, null)
-        val bottomSheetDialog = BottomSheetDialog(this)
-        bottomSheetDialog.setContentView(bottomSheetView)
-
-        val rvPacienteList = bottomSheetView.findViewById<RecyclerView>(R.id.rv_patient_list)
-        rvPacienteList.layoutManager = LinearLayoutManager(this)
-
-        val btnCerrar = bottomSheetView.findViewById<Button>(R.id.btnCloseBottomSheet) // Botón de cerrar en el diseño
-        val usuarioId = ActualSession.usuarioLogeado?.id
-
-        if (usuarioId == null) {
-            Toast.makeText(this, "Usuario no válido", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        val pacienteViewModel = ViewModelProvider(
-            this,
-            ViewModelFactory(null, PacienteRepository(DatabaseInstance.getDatabase(this).pacienteDao()))
-        ).get(PacienteViewModel::class.java)
-
-        pacienteViewModel.obtenerPacientesPorUsuario(usuarioId).observe(this, { pacientes ->
-            if (pacientes.isEmpty()) {
-                Toast.makeText(this, "No hay pacientes registrados para este usuario", Toast.LENGTH_SHORT).show()
-            } else {
-                val adapter = PacienteAdapter(pacientes) { paciente ->
-                    Toast.makeText(this, "Paciente seleccionado: ${paciente.nombre}", Toast.LENGTH_SHORT).show()
-                    ActualPatient.pacienteSeleccionado = paciente // Actualiza el paciente seleccionado
-                    // No cerrar el BottomSheet aquí
-                }
-                rvPacienteList.adapter = adapter
-            }
-        })
-
-        // Configuración del botón "Cerrar"
-        btnCerrar.setOnClickListener {
-            bottomSheetDialog.dismiss()
-        }
-
-        bottomSheetDialog.show()
-    }
 
 }
-

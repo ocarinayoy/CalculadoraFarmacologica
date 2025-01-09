@@ -9,10 +9,11 @@ import com.TI2.famacologiccalc.ui.login.LoginViewModel
 import com.TI2.famacologiccalc.ui.register.RegisterViewModel
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 import com.TI2.famacologiccalc.ui.weighteddosage.WeightedDosageViewModel
+import com.TI2.famacologiccalc.ui.sheetdialog.consulta.PacienteConsultaViewModel
 
 class ViewModelFactory(
-    private val usuarioRepository: UsuarioRepository?,
-    private val pacienteRepository: PacienteRepository?
+    private val usuarioRepository: UsuarioRepository? = null,
+    private val pacienteRepository: PacienteRepository? = null
 ) : ViewModelProvider.Factory {
 
     @Suppress("UNCHECKED_CAST")
@@ -32,6 +33,9 @@ class ViewModelFactory(
             }
             modelClass.isAssignableFrom(WeightedDosageViewModel::class.java) && usuarioRepository != null && pacienteRepository != null -> {
                 WeightedDosageViewModel(usuarioRepository, pacienteRepository) as T
+            }
+            modelClass.isAssignableFrom(PacienteConsultaViewModel::class.java) && pacienteRepository != null -> {
+                PacienteConsultaViewModel(pacienteRepository) as T
             }
             else -> throw IllegalArgumentException("Unknown ViewModel class or missing repository")
         }

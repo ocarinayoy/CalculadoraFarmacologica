@@ -1,4 +1,4 @@
-package com.TI2.famacologiccalc.ui.sheetdialog
+package com.TI2.famacologiccalc.ui.sheetdialog.registro
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,10 +17,8 @@ import com.TI2.famacologiccalc.database.session.ActualSession
 import com.TI2.famacologiccalc.ui.ViewModelFactory
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import java.text.SimpleDateFormat
-import java.util.*
 
-class PacienteR_BSDFragment : BottomSheetDialogFragment() {
+class PacienteRegistroFragment : BottomSheetDialogFragment() {
 
     private var _binding: BottomSheetRegistroPacienteBinding? = null
     private val binding get() = _binding!!
@@ -60,6 +58,7 @@ class PacienteR_BSDFragment : BottomSheetDialogFragment() {
             val fechaRegistro = binding.etFechaRegistro.text.toString()
             val estatus = binding.spEstatusPaciente.selectedItem.toString()
 
+            // Verificar que los campos no estén vacíos y realizar la validación
             if (nombre.isNotEmpty() && edad != null && peso != null && fechaRegistro.isNotEmpty()) {
                 // Verificar que el usuario esté logueado y obtener su ID
                 val usuarioId = ActualSession.usuarioLogeado?.id
@@ -75,15 +74,15 @@ class PacienteR_BSDFragment : BottomSheetDialogFragment() {
                         usuarioId = usuarioId // Asociamos al paciente con el usuario logueado
                     )
 
-                    // Registrar el paciente
-                    pacienteViewModel.insert(paciente)
-                    Toast.makeText(requireContext(), "Paciente registrado exitosamente", Toast.LENGTH_SHORT).show()
-                    dismiss() // Cerrar el BottomSheet
-                } else {
-                    Toast.makeText(requireContext(), "No se pudo obtener el usuario logueado", Toast.LENGTH_SHORT).show()
+                    // Llamar al método del ViewModel para registrar el paciente
+                    pacienteViewModel.registrarPaciente(nombre,edad,peso,altura,fechaRegistro,estatus,usuarioId)
+
+                    // Cerrar el BottomSheetDialog y mostrar mensaje de éxito
+                    dismiss()
+                    Toast.makeText(requireContext(), "Paciente registrado correctamente", Toast.LENGTH_SHORT).show()
                 }
             } else {
-                Toast.makeText(requireContext(), "Por favor, completa todos los campos correctamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Por favor, complete todos los campos", Toast.LENGTH_SHORT).show()
             }
         }
 
