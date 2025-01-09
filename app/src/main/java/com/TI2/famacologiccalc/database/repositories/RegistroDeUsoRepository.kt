@@ -1,4 +1,4 @@
-package com.TI2.famacologiccalc.database.repository
+package com.TI2.famacologiccalc.database.repositories
 
 import com.TI2.famacologiccalc.database.dao.RegistroDeUsoDao
 import com.TI2.famacologiccalc.database.models.RegistroDeUso

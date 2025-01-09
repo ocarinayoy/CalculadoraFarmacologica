@@ -10,8 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.TI2.famacologiccalc.database.AppDatabase
 import com.TI2.famacologiccalc.database.repositories.PacienteRepository
+import com.TI2.famacologiccalc.database.repositories.RegistroDeUsoRepository
 import com.TI2.famacologiccalc.database.repositories.UsuarioRepository
 import com.TI2.famacologiccalc.database.session.ActualPatient
+import com.TI2.famacologiccalc.database.session.ActualSession
 import com.TI2.famacologiccalc.databinding.FragmentWeighteddosageBinding
 import com.TI2.famacologiccalc.ui.ViewModelFactory
 import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
@@ -35,15 +37,17 @@ class WeightedDosageFragment : Fragment() {
         // Inicializa los DAOs de la base de datos
         val usuarioDao = AppDatabase.getDatabase(requireContext()).usuarioDao()
         val pacienteDao = AppDatabase.getDatabase(requireContext()).pacienteDao()
+        val registroDeUsoDao = AppDatabase.getDatabase(requireContext()).registrosDeUsoDao()
 
-        // Inicializa los repositorios
+// Inicializa los repositorios
         val usuarioRepository = UsuarioRepository(usuarioDao)
         val pacienteRepository = PacienteRepository(pacienteDao)
+        val registroDeUsoRepository = RegistroDeUsoRepository(registroDeUsoDao)
 
-        // Crear el ViewModelFactory con los repositorios
-        val viewModelFactory = ViewModelFactory(usuarioRepository, pacienteRepository)
+// Crear el ViewModelFactory con los repositorios
+        val viewModelFactory = ViewModelFactory(usuarioRepository, pacienteRepository, registroDeUsoRepository)
 
-        // Crear el ViewModel usando el ViewModelFactory
+// Crear el ViewModel usando el ViewModelFactory
         viewModel = ViewModelProvider(this, viewModelFactory).get(WeightedDosageViewModel::class.java)
 
         // Observar cambios en el resultado
@@ -117,26 +121,32 @@ class WeightedDosageFragment : Fragment() {
 
     private fun setupCalculateButton() {
         binding.btnCalculate.setOnClickListener {
-            // Capturar los valores de los EditText y convertirlos a los tipos apropiados
             val weightValue = binding.etWeight.text.toString().toDoubleOrNull() ?: 0.0
             val dosageValue = binding.etDosage.text.toString().toDoubleOrNull() ?: 0.0
             val frequencyValue = binding.etFrequency.text.toString().toIntOrNull() ?: 0
 
-            // Verificar que los valores sean válidos antes de enviarlos al ViewModel
             if (weightValue > 0 && dosageValue > 0 && frequencyValue > 0) {
-                // Actualizar el ViewModel con los valores
-                viewModel.weight.value = weightValue.toString()
-                viewModel.dosagePerKg.value = dosageValue.toString()
-                viewModel.frequency.value = frequencyValue.toString()
+                val currentUser = ActualSession.usuarioLogeado
+                val currentPatient = ActualPatient.pacienteSeleccionado
 
-                // Calcular la dosificación
-                viewModel.calculateDosage()
+                if (currentUser != null && currentPatient != null) {
+                    viewModel.weight.value = weightValue.toString()
+                    viewModel.dosagePerKg.value = dosageValue.toString()
+                    viewModel.frequency.value = frequencyValue.toString()
+
+                    viewModel.calculateAndSaveDosage(
+                        userId = currentUser.id.toInt(),
+                        patientId = currentPatient.id.toInt()
+                    )
+                } else {
+                    binding.tvResult.text = "No se ha seleccionado un usuario o paciente."
+                }
             } else {
-                // Mostrar mensaje de error si los valores no son válidos
                 binding.tvResult.text = "Por favor, ingrese valores válidos."
             }
         }
     }
+
 
     override fun onResume() {
         super.onResume()
