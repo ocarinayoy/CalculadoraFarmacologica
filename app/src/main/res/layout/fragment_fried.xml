@@ -61,7 +61,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvPatientDataLabel" />
 
-      <TextView
+    <TextView
         android:id="@+id/tvAge"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

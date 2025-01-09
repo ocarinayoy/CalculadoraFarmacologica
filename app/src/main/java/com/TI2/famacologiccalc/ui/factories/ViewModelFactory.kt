@@ -14,6 +14,7 @@ import com.TI2.famacologiccalc.viewmodels.PacienteViewModel
 import com.TI2.famacologiccalc.ui.weighteddosage.WeightedDosageViewModel
 import com.TI2.famacologiccalc.ui.sheetdialog.consulta.PacienteConsultaViewModel
 import com.TI2.famacologiccalc.ui.surfacedosage.SurfaceDosageViewModel
+import com.TI2.famacologiccalc.ui.young.YoungViewModel
 
 class ViewModelFactory(
     private val usuarioRepository: UsuarioRepository? = null,
@@ -47,6 +48,9 @@ class ViewModelFactory(
             }
             modelClass.isAssignableFrom(FriedViewModel::class.java) && usuarioRepository != null && pacienteRepository != null && registroDeUsoRepository != null -> {
                 FriedViewModel(usuarioRepository, pacienteRepository, registroDeUsoRepository) as T
+            }
+            modelClass.isAssignableFrom(YoungViewModel::class.java) && usuarioRepository != null && pacienteRepository != null && registroDeUsoRepository != null -> {
+                YoungViewModel(usuarioRepository, pacienteRepository, registroDeUsoRepository) as T
             }
             modelClass.isAssignableFrom(SurfaceDosageViewModel::class.java) && usuarioRepository != null && pacienteRepository != null && registroDeUsoRepository != null -> {
                 SurfaceDosageViewModel(usuarioRepository, pacienteRepository, registroDeUsoRepository) as T

@@ -21,4 +21,7 @@ class RegistroDeUsoRepository(private val registroDeUsoDao: RegistroDeUsoDao) {
     fun getAllRegistros(): Flow<List<RegistroDeUso>> {
         return registroDeUsoDao.getAllRegistros()
     }
+
+
+
 }
