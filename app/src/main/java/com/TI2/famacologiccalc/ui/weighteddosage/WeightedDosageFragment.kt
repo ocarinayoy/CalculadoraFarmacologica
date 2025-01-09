@@ -78,7 +78,8 @@ class WeightedDosageFragment : Fragment() {
         ActualPatient.pacienteSeleccionado?.let { paciente ->
             // Cargar los datos en los EditText
             binding.etWeight.setText(paciente.peso?.toString() ?: "")
-            // Aquí puedes cargar otros datos si es necesario
+            // Cargar el nombre del paciente en el TextView
+            binding.tvPatientName.text = "Paciente: ${paciente.nombre}"
         }
     }
 
